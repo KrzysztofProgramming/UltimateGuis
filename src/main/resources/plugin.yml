@@ -1,0 +1,3 @@
+name: UltimateGuis
+version: ${project.version}
+main: ad.guis.ultimateguis.UltimateGuis
