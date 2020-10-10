@@ -18,9 +18,10 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 public class CalendarGui extends BasicGui {
-    GregorianCalendar calendar = new GregorianCalendar();
+    GregorianCalendar calendar = new GregorianCalendar(new Locale("FR", "FR"));
     DateAction dateAction;
     private static ItemStack nextYear;
     private static ItemStack previousYear;
@@ -92,7 +93,6 @@ public class CalendarGui extends BasicGui {
 
     private void init(){
         this.gui.clear();
-
         calendar.set(Calendar.DAY_OF_MONTH, 1);
         int subValue = (calendar.get(Calendar.WEEK_OF_MONTH)==0) ? 0 : 1;
         int dayInMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
@@ -175,6 +175,7 @@ public class CalendarGui extends BasicGui {
     }
 
     private static int getDayOfWeek(GregorianCalendar calendar){
+        //return calendar.get(Calendar.DAY_OF_WEEK);
         int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
         if(dayOfWeek==1) dayOfWeek = 7;
         else --dayOfWeek;

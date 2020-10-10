@@ -38,7 +38,7 @@ public final class UltimateGuis extends JavaPlugin {
             if(sender instanceof Player){
                 Player player = (Player) sender;
                 GregorianCalendar calendar = new GregorianCalendar(2020, Calendar.NOVEMBER, 5);
-                CalendarGui calendarGui = new CalendarGui(calendar.getTime());
+                CalendarGui calendarGui = new CalendarGui();
                 calendarGui.setDateAction(date -> {
                     Bukkit.broadcastMessage(new SimpleDateFormat("dd.MM.yyyy").format(date));
                 });
