@@ -1,5 +1,7 @@
 package ad.guis.ultimateguis;
 
+import org.bukkit.ChatColor;
+
 public class Colors {
     public final static short WHITE = 0;
     public final static short ORANGE = 1;

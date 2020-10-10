@@ -11,13 +11,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * pozwala stworzyś proste gui z pomocą GuiListener samo zajmuje się obsługą eventów
- */
 public class BasicGui {
     protected Inventory gui;
     protected HashMap<ItemStack, Action> actions = new HashMap<>();
-    protected BasicGui previousGui = null;
+    protected BasicGui previousGui;
     protected Player viewer;
 
     /**
@@ -64,7 +61,6 @@ public class BasicGui {
     /**
      * zwraca previous gui, należy sprawdzić czy to nie null
      *
-     * @return
      */
     public BasicGui getPreviousGui() {
         return previousGui;
@@ -72,8 +68,6 @@ public class BasicGui {
 
     /**
      * ustawia previous gui
-     *
-     * @param previousGui
      */
     public void setPreviousGui(BasicGui previousGui) {
         this.previousGui = previousGui;
@@ -111,7 +105,6 @@ public class BasicGui {
      * Obramowuje gui, podanym itemem, ale nie usuwa itemów
      *
      * @param item
-     * @return
      */
     public boolean autoFrame(ItemStack item) {
         if (this.getRowsAmount() < 3) return false;
