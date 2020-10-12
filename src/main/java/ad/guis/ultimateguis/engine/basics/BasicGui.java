@@ -3,9 +3,12 @@ package ad.guis.ultimateguis.engine.basics;
 import ad.guis.ultimateguis.UltimateGuis;
 import ad.guis.ultimateguis.engine.interfaces.Action;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -230,4 +233,27 @@ public class BasicGui {
         }
         return lore;
     }
+
+    public static ItemStack createItem(Material materialType, String name, List<String> lore){
+        ItemStack item = new ItemStack(materialType);
+        ItemMeta meta = item.getItemMeta();
+        if (name != null) meta.setDisplayName(name);
+        if (lore != null) meta.setLore(lore);
+        item.setItemMeta(meta);
+        return item;
+    }
+
+    public static ItemStack createItem(Material materialType, String name){
+         return createItem(materialType, name, null);
+    }
+
+    public static ItemStack createBackground(short color){
+        ItemStack item = new ItemStack(Material.STAINED_GLASS_PANE, 1, color);
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(ChatColor.BOLD + "");
+        item.setItemMeta(meta);
+        return item;
+    }
+
+
 }

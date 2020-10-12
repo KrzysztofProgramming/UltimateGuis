@@ -2,14 +2,10 @@ package ad.guis.ultimateguis.examples;
 
 import ad.guis.ultimateguis.Colors;
 import ad.guis.ultimateguis.engine.basics.BasicGui;
-import ad.guis.ultimateguis.engine.interfaces.Action;
 import ad.guis.ultimateguis.engine.interfaces.DateAction;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -23,18 +19,42 @@ import java.util.Locale;
 public class CalendarGui extends BasicGui {
     GregorianCalendar calendar = new GregorianCalendar(new Locale("FR", "FR"));
     DateAction dateAction;
-    private static ItemStack nextYear;
-    private static ItemStack previousYear;
-    private static ItemStack nextMonth;
-    private static ItemStack previousMonth;
-    private static ItemStack backgroundBlack;
-    private static ItemStack backItem;
-    private static ItemStack exitItem;
+    private ItemStack nextYear;
+    private ItemStack previousYear;
+    private ItemStack nextMonth;
+    private ItemStack previousMonth;
+    private ItemStack backgroundBlack;
+    private ItemStack backItem;
+    private ItemStack exitItem;
+    private String title;
 
 
     private static SimpleDateFormat dateFormatter;
 
-    static {
+
+    public CalendarGui(Date date, DateAction action, String title, BasicGui previousGui) {
+        super(6,'[' + new SimpleDateFormat("MM.yyyy").format(date) + "] " + title , previousGui);
+        this.title = title;
+        this.dateAction = action;
+        this.setDate(date);
+    }
+
+    public CalendarGui(Date date, DateAction action, String title){
+        this(date, action, title, null);
+    }
+
+    public CalendarGui(Date date, DateAction action){
+        this(date, action, "");
+    }
+
+    public CalendarGui(Date date){
+        this(date, null);
+    }
+    public CalendarGui(){
+        this(new Date());
+    }
+
+    private void init(){
         nextYear = new ItemStack(Material.BLAZE_ROD);
         ItemMeta meta = nextYear.getItemMeta();
         meta.setDisplayName(ChatColor.BOLD + "Next Year");
@@ -71,27 +91,8 @@ public class CalendarGui extends BasicGui {
         meta = exitItem.getItemMeta();
         meta.setDisplayName(ChatColor.RED + "" + ChatColor.BOLD + "Exit");
         exitItem.setItemMeta(meta);
-    }
 
 
-    public CalendarGui(Date date, DateAction action, BasicGui previousGui) {
-        super(6, new SimpleDateFormat("MM.yyyy").format(date), previousGui);
-        this.dateAction = action;
-        this.setDate(date);
-    }
-
-    public CalendarGui(Date date, DateAction action){
-        this(date, action, null);
-    }
-
-    public CalendarGui(Date date){
-        this(date, null);
-    }
-    public CalendarGui(){
-        this(new Date());
-    }
-
-    private void init(){
         this.gui.clear();
         calendar.set(Calendar.DAY_OF_MONTH, 1);
         int subValue = (calendar.get(Calendar.WEEK_OF_MONTH)==0) ? 0 : 1;
@@ -112,7 +113,7 @@ public class CalendarGui extends BasicGui {
            }
            else
                calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, 1);
-           new CalendarGui(calendar.getTime(), dateAction, previousGui).open(player);
+           new CalendarGui(calendar.getTime(), dateAction, title, previousGui).open(player);
         });
 
         this.setItem(0,5, previousMonth, player -> {
@@ -121,17 +122,17 @@ public class CalendarGui extends BasicGui {
             }
             else
                 calendar.set(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) - 1, 1);
-            new CalendarGui(calendar.getTime(), dateAction, previousGui).open(player);
+            new CalendarGui(calendar.getTime(), dateAction, title, previousGui).open(player);
         });
 
         this.setItem(0,4, previousYear, player -> {
                 calendar.set(calendar.get(Calendar.YEAR) - 1, calendar.get(Calendar.MONTH), 1);
-            new CalendarGui(calendar.getTime(), dateAction, previousGui).open(player);
+            new CalendarGui(calendar.getTime(), dateAction, title, previousGui).open(player);
         });
 
         this.setItem(8,4, nextYear, player -> {
             calendar.set(calendar.get(Calendar.YEAR) + 1, calendar.get(Calendar.MONTH), 1);
-            new CalendarGui(calendar.getTime(), dateAction, previousGui).open(player);
+            new CalendarGui(calendar.getTime(), dateAction, title, previousGui).open(player);
         });
 
         this.setItem(0,1, backItem, player -> {
@@ -192,7 +193,7 @@ public class CalendarGui extends BasicGui {
     /**
      * @param itemID 0-previousYear, 1-nextYear, 2-previousMonth, 3-nextMonth, 4-back, 5-exit
      */
-    public static boolean setItemName(int itemID, String name){
+    public boolean setItemName(int itemID, String name){
         ItemMeta meta;
         ItemStack item;
         switch (itemID){
