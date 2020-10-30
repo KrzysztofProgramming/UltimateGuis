@@ -1,16 +1,13 @@
 package ad.guis.ultimateguis;
 
 import ad.guis.ultimateguis.engine.GuiListener;
-import ad.guis.ultimateguis.engine.interfaces.DateAction;
-import ad.guis.ultimateguis.examples.CalendarGui;
-import com.google.common.cache.CacheLoader;
+import ad.guis.ultimateguis.examples.calendargui.CalendarGui;
+import ad.guis.ultimateguis.examples.calendargui.SpecialDate;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.text.SimpleDateFormat;
@@ -38,10 +35,11 @@ public final class UltimateGuis extends JavaPlugin {
             if(sender instanceof Player){
                 Player player = (Player) sender;
                 GregorianCalendar calendar = new GregorianCalendar(2020, Calendar.NOVEMBER, 5);
-                CalendarGui calendarGui = new CalendarGui();
-                calendarGui.setDateAction(date -> {
+                CalendarGui calendarGui = new CalendarGui(calendar.getTime());
+                calendarGui.setCalendarGuiAction((date, playerWhoClicked, calendarGui1) -> {
                     Bukkit.broadcastMessage(new SimpleDateFormat("dd.MM.yyyy").format(date));
                 });
+                calendarGui.addSpecialDate(new SpecialDate(calendar.getTime()));
                 calendarGui.open(player);
                 return true;
             }

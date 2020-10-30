@@ -2,6 +2,7 @@ package ad.guis.ultimateguis;
 
 import org.bukkit.ChatColor;
 
+
 public class Colors {
     public final static short WHITE = 0;
     public final static short ORANGE = 1;
@@ -19,4 +20,25 @@ public class Colors {
     public final static short GREEN = 13;
     public final static short RED = 14;
     public final static short BLACK = 15;
+
+    public static ChatColor toChatColor(short c){
+        switch (c){
+            case WHITE: return ChatColor.WHITE;
+            case ORANGE: return ChatColor.GOLD;
+            case MAGENTA:
+            case PINK: return ChatColor.LIGHT_PURPLE;
+            case LIGHT_BLUE: return ChatColor.BLUE;
+            case YELLOW: return ChatColor.YELLOW;
+            case LIME: return ChatColor.GREEN;
+            case GRAY: return ChatColor.DARK_GRAY;
+            case LIGHT_GRAY: return ChatColor.GRAY;
+            case CYAN: return ChatColor.AQUA;
+            case PURPLE: return ChatColor.DARK_PURPLE;
+            case BLUE: return ChatColor.DARK_BLUE;
+            case BROWN: return ChatColor.DARK_RED;
+            case GREEN: return ChatColor.DARK_GREEN;
+            case BLACK: return ChatColor.BLACK;
+            default: return ChatColor.RESET;
+        }
+    }
 }
