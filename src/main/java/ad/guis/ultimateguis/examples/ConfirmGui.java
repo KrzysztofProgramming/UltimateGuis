@@ -1,5 +1,6 @@
 package ad.guis.ultimateguis.examples;
 
+import ad.guis.ultimateguis.Colors;
 import ad.guis.ultimateguis.engine.basics.BasicGui;
 import ad.guis.ultimateguis.engine.interfaces.Action;
 import org.bukkit.ChatColor;
@@ -27,21 +28,9 @@ public class ConfirmGui extends BasicGui {
         meta.setDisplayName(ChatColor.RED + "" + ChatColor.BOLD + "✕");
         deny.setItemMeta(meta);
 
-        backgroundBlack = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 15);
-        meta = backgroundBlack.getItemMeta();
-        meta.setDisplayName(ChatColor.BOLD + "");
-        backgroundBlack.setItemMeta(meta);
-
-        backgroundRed = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 14);
-        meta = backgroundRed.getItemMeta();
-        meta.setDisplayName(ChatColor.BOLD + "");
-        backgroundRed.setItemMeta(meta);
-
-        backgroundGreen = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 13);
-        meta = backgroundGreen.getItemMeta();
-        meta.setDisplayName(ChatColor.BOLD + "");
-        backgroundGreen.setItemMeta(meta);
-
+        backgroundBlack = BasicGui.createBackground(Colors.BLACK);
+        backgroundRed = BasicGui.createBackground(Colors.RED);
+        backgroundGreen =BasicGui.createBackground(Colors.GREEN);
     }
 
     private Action accepted;

@@ -58,6 +58,7 @@ public final class UltimateGuis extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        this.guiListener.disable();
         instance = null;
         // Plugin shutdown logic
     }

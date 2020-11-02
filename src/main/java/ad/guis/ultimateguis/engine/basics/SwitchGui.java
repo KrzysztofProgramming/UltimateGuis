@@ -1,5 +1,6 @@
 package ad.guis.ultimateguis.engine.basics;
 
+import ad.guis.ultimateguis.Colors;
 import ad.guis.ultimateguis.UltimateGuis;
 import ad.guis.ultimateguis.engine.interfaces.Action;
 import org.bukkit.ChatColor;
@@ -45,6 +46,7 @@ public class SwitchGui {
         }
         return true;
     }
+
     /**
      * dodaje item z akcją do paska na dole strony
      * @param item item do dodania
@@ -52,6 +54,7 @@ public class SwitchGui {
      * @param position od 0 do 5;
      * @return
      */
+
     public boolean addActionItem(ItemStack item, Action action, int position) {
         if (position >= 3) position++;
         return this.addActionItem(item, action, position, true);
@@ -63,20 +66,10 @@ public class SwitchGui {
         for (int i = 0; i < pagesAmount; i++) {
             guis.add(new SwitchGuiElement(6, (customTitles) ? title : "Page " + (i + 1), this, i, previousGui));
             guis.get(i).setPreviousGui(this.previousGui);
-            ItemStack next = new ItemStack(Material.ARROW);
-            ItemMeta meta = next.getItemMeta();
-            meta.setDisplayName("Next page");
-            next.setItemMeta(meta);
 
-            ItemStack previous = new ItemStack(Material.ARROW);
-            meta = previous.getItemMeta();
-            meta.setDisplayName("Previous page");
-            previous.setItemMeta(meta);
-
-            ItemStack fill = new ItemStack(Material.STAINED_GLASS_PANE, 1,(short) 7);
-            meta = fill.getItemMeta();
-            meta.setDisplayName(" ");
-            fill.setItemMeta(meta);
+            ItemStack next = BasicGui.createItem(Material.ARROW, "Next page");
+            ItemStack previous = BasicGui.createItem(Material.ARROW, "Previous page");
+            ItemStack fill = BasicGui.createBackground(Colors.GRAY);
 
             SwitchGuiElement gui = guis.get(i);
 
