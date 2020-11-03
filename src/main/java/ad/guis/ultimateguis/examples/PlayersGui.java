@@ -75,7 +75,7 @@ public class PlayersGui extends SwitchGui {
             playerList = new ArrayList<>();
         }
         players.clear();
-        super.initPages((playerList.size() / 46) + 1, null);
+        super.initPages((playerList.size() / 45) + 1, null);
         ItemStack item;
         ItemMeta meta;
         int counter = 0;

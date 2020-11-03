@@ -19,6 +19,7 @@ public class SwitchGui {
     protected final UltimateGuis plugin;
     protected List<SwitchGuiElement> guis = new ArrayList<>();
     protected BasicGui previousGui = null;
+    protected int lastOpenedPage = 0;
     /**
      * Tworzy Switch Gui
      *
@@ -180,5 +181,6 @@ public class SwitchGui {
      * @param page strona która została otworzona
      */
     protected void pageWasOpen(int pageNumber, SwitchGuiElement page) {
+        lastOpenedPage = pageNumber;
     }
 }
