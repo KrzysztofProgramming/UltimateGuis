@@ -62,6 +62,7 @@ public class SwitchGui {
 
     protected void initPages(int pagesAmount, String title) {
         guis.clear();
+        if(title==null) title = "";
         for (int i = 0; i < pagesAmount; i++) {
             guis.add(new SwitchGuiElement(6,title + " [" + (i+1) + "/" + pagesAmount + "]" , this, i, previousGui));
             guis.get(i).setPreviousGui(this.previousGui);
