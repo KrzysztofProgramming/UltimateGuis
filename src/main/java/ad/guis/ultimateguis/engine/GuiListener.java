@@ -63,7 +63,6 @@ public class GuiListener implements Listener {
      */
     @EventHandler
     void InventoryClick(InventoryClickEvent e) {
-        //  Bukkit.broadcastMessage("GuiListeners: " +this.activeGuis.size());
         for (BasicGui gui : activeGuis) {
             if (e.getInventory().equals(gui.getGui())) {
                 if (e.getWhoClicked() instanceof Player) {

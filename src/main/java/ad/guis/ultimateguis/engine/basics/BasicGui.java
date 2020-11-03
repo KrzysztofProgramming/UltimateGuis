@@ -213,7 +213,7 @@ public class BasicGui {
         UltimateGuis.getInstance().getGuiListener().removeGui(this);
     }
 
-    public static List<String> splitLoreNicely(String text, int charactersLimit) {
+    public static ArrayList<String> splitLoreNicely(String text, int charactersLimit) {
         ArrayList<String> lore = new ArrayList<>();
         String[] words = text.split(" "); // Get the "words" in the line of text by splitting the space characters
         int wordsUsed = 0; // A counter for how many words have been placed in lines so far

@@ -81,7 +81,7 @@ public class PlayersGui extends SwitchGui {
         int counter = 0;
         int currentPage = 0;
         for (OfflinePlayer p : playerList) {
-            if (counter > 45) {
+            if (counter >= 45) {
                 currentPage++;
                 counter = 0;
             }
