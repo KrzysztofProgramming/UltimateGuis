@@ -62,9 +62,8 @@ public class SwitchGui {
 
     protected void initPages(int pagesAmount, String title) {
         guis.clear();
-        boolean customTitles = title != null;
         for (int i = 0; i < pagesAmount; i++) {
-            guis.add(new SwitchGuiElement(6, (customTitles) ? title : "Page " + (i + 1), this, i, previousGui));
+            guis.add(new SwitchGuiElement(6,title + " [" + (i+1) + "/" + pagesAmount + "]" , this, i, previousGui));
             guis.get(i).setPreviousGui(this.previousGui);
 
             ItemStack next = BasicGui.createItem(Material.ARROW, "Next page");
