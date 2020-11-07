@@ -3,6 +3,7 @@ package ad.guis.ultimateguis.engine.basics;
 import ad.guis.ultimateguis.Colors;
 import ad.guis.ultimateguis.UltimateGuis;
 import ad.guis.ultimateguis.engine.interfaces.Action;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -10,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -19,8 +21,8 @@ public class SwitchGui {
     protected final UltimateGuis plugin;
     protected List<SwitchGuiElement> guis = new ArrayList<>();
     protected BasicGui previousGui = null;
-    private int lastOpenedPage = -1;
-    private int lastClosedPage = -1;
+    private int lastOpenedPage = 0;
+    private int lastClosedPage = 0;
     private boolean pageChanging = false;
     /**
      * Tworzy Switch Gui
@@ -206,25 +208,31 @@ public class SwitchGui {
     /**
      * called before page open
      */
-    protected void pageOnOpen(int pageNumber, Player opener) {
-        if(!pageChanging) guiOnOpen(pageNumber, opener);
+    protected boolean pageOnOpen(int pageNumber, Player opener) {
+        if(!pageChanging) return guiOnOpen(pageNumber, opener);
+        return true;
     }
 
     /**
      * called before page close
      */
-    protected void pageOnClose(int pageNumber){
+    protected boolean pageOnClose(int pageNumber){
         if(!pageChanging)
-            guiOnClose(pageNumber);
+           return guiOnClose(pageNumber);
+        return true;
     }
 
-    protected void guiOnClose(int pagenumber){}
-    protected void guiOnOpen(int pageNumber, Player opener){}
+    protected boolean guiOnClose(int pagenumber){return true;}
+    protected boolean guiOnOpen(int pageNumber, Player opener){return true;}
 
     protected void pageAfterOpen(int pageNumber, Player opener){
         lastOpenedPage = pageNumber;
-        if(pageChanging) pageChanging= false;
-        else guiAfterOpen(pageNumber, opener);
+        if(pageChanging){
+            pageChanging = false;
+        }
+        else{
+            guiAfterOpen(pageNumber, opener);
+        };
     }
 
     protected void pageAfterClose(int pageNumber){
@@ -234,4 +242,27 @@ public class SwitchGui {
 
     protected void guiAfterClose(int pageNumber){}
     protected void guiAfterOpen(int pageNumber, Player opener){}
+
+    protected void switchToLastClosedPage(Player player){
+
+        if(this.getLastClosedPage() >= this.getSize()) {
+            changePage(this.getSize() - 1, player);
+        }
+        else {
+            changePage(this.getLastClosedPage(), player);
+        }
+    }
+
+    protected void switchToLastOpenedPage(Player player){
+        if(this.getLastOpenedPage() >= this.getSize()) {
+            changePage(this.getSize() - 1, player);
+        }
+        else {
+            changePage(this.getLastOpenedPage(), player);
+        }
+    }
+
+    public static int calcPageCount(int itemsCount){
+        return (itemsCount - 1) / 45 + 1;
+    }
 }
