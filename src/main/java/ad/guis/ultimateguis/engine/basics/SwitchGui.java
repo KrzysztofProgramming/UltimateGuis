@@ -19,7 +19,9 @@ public class SwitchGui {
     protected final UltimateGuis plugin;
     protected List<SwitchGuiElement> guis = new ArrayList<>();
     protected BasicGui previousGui = null;
-    protected int lastOpenedPage = 0;
+    private int lastOpenedPage = -1;
+    private int lastClosedPage = -1;
+    private boolean pageChanging = false;
     /**
      * Tworzy Switch Gui
      *
@@ -64,29 +66,33 @@ public class SwitchGui {
     protected void initPages(int pagesAmount, String title) {
         guis.clear();
         if(title==null) title = "";
+        ItemStack next = BasicGui.createItem(Material.ARROW, "Next page");
+        ItemStack previous = BasicGui.createItem(Material.ARROW, "Previous page");
+        ItemStack fill = BasicGui.createBackground(Colors.GRAY);
+
         for (int i = 0; i < pagesAmount; i++) {
             guis.add(new SwitchGuiElement(6,title + " [" + (i+1) + "/" + pagesAmount + "]" , this, i, previousGui));
             guis.get(i).setPreviousGui(this.previousGui);
 
-            ItemStack next = BasicGui.createItem(Material.ARROW, "Next page");
-            ItemStack previous = BasicGui.createItem(Material.ARROW, "Previous page");
-            ItemStack fill = BasicGui.createBackground(Colors.GRAY);
 
             SwitchGuiElement gui = guis.get(i);
 
-            int finalI = i;
+            int I = i;
             if(i + 1 < pagesAmount )
                 gui.setItem(8, 5, next, player -> {
-                       BasicGui nextPage = guis.get(finalI + 1);
-                       nextPage.open(player);
+                    changePage(I + 1, player);
                 }, true);
+            else if(pagesAmount > 1){
+                gui.setItem(8, 5, next, player -> {
+                    changePage(0, player);
+                }, true);
+            }
             else{
-                gui.setItem(8, 5, fill, null, true);
+                gui.setItem(8,5, fill, null);
             }
             if(i - 1 >= 0)
                 gui.setItem(0, 5, previous, player -> {
-                        BasicGui previousPage = guis.get(finalI - 1);
-                        previousPage.open(player);
+                    changePage(I - 1, player);
                     }, true);
             else{
                 gui.setItem(0, 5, fill, null, true);
@@ -96,6 +102,11 @@ public class SwitchGui {
                 gui.setItem(j, 5, fill, null, true);
             }
         }
+        if(pagesAmount > 1)
+            guis.get(0).setItem(0, 5, previous, player -> {
+                changePage(pagesAmount - 1, player);
+            }, true);
+
         ItemStack back = new ItemStack(Material.NETHER_STAR);
         ItemMeta meta = back.getItemMeta();
         meta.setDisplayName(ChatColor.BOLD + "Back");
@@ -105,6 +116,19 @@ public class SwitchGui {
             if (previousGui != null) previousGui.open(player);
             else player.closeInventory();
         },3,true);
+    }
+
+    protected void changePage(int number, Player player){
+        pageChanging = true;
+        guis.get(number).open(player);
+    }
+
+    public int getLastOpenedPage() {
+        return lastOpenedPage;
+    }
+
+    public int getLastClosedPage() {
+        return lastClosedPage;
     }
 
     /**
@@ -135,6 +159,10 @@ public class SwitchGui {
             return null;
         }
         return guis.get(page);
+    }
+
+    public boolean isPageChanging(){
+        return pageChanging;
     }
 
     /**
@@ -176,11 +204,34 @@ public class SwitchGui {
     }
 
     /**
-     * zostaje wywołana tuż przed otworzeniem SwitchGui
-     *
-     * @param page strona która została otworzona
+     * called before page open
      */
-    protected void pageWasOpen(int pageNumber, SwitchGuiElement page) {
-        lastOpenedPage = pageNumber;
+    protected void pageOnOpen(int pageNumber, Player opener) {
+        if(!pageChanging) guiOnOpen(pageNumber, opener);
     }
+
+    /**
+     * called before page close
+     */
+    protected void pageOnClose(int pageNumber){
+        if(!pageChanging)
+            guiOnClose(pageNumber);
+    }
+
+    protected void guiOnClose(int pagenumber){}
+    protected void guiOnOpen(int pageNumber, Player opener){}
+
+    protected void pageAfterOpen(int pageNumber, Player opener){
+        lastOpenedPage = pageNumber;
+        if(pageChanging) pageChanging= false;
+        else guiAfterOpen(pageNumber, opener);
+    }
+
+    protected void pageAfterClose(int pageNumber){
+        if(!pageChanging) guiAfterClose(pageNumber);
+        lastClosedPage = pageNumber;
+    }
+
+    protected void guiAfterClose(int pageNumber){}
+    protected void guiAfterOpen(int pageNumber, Player opener){}
 }

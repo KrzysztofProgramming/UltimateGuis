@@ -212,20 +212,24 @@ public class BasicGui {
     public void removeFromListeners() {
         UltimateGuis.getInstance().getGuiListener().removeGui(this);
     }
-
-    public static ArrayList<String> splitLoreNicely(String text, int charactersLimit) {
+    public static ArrayList<String> splitLoreNicely(String text, int charactersLimit){
+       return splitLoreNicely(text, charactersLimit, null);
+    }
+    public static ArrayList<String> splitLoreNicely(String text, int charactersLimit, String addPrefix) {
+        if(addPrefix==null) addPrefix = "";
         ArrayList<String> lore = new ArrayList<>();
         String[] words = text.split(" "); // Get the "words" in the line of text by splitting the space characters
         int wordsUsed = 0; // A counter for how many words have been placed in lines so far
         while (wordsUsed < words.length) { // Repeat this process until all words have been placed into separate lines
             StringBuilder line = new StringBuilder(); // The line that will be added to the lore list
             for (int i = wordsUsed; i < words.length; i++) { // For each remaining word in the array
-                if (line.length() + words[i].length() >= charactersLimit) { // If adding the next word exceeds or matches the character limit...
-                    line.append(words[i]); // Add the last word in the line without a space character
+                if (line.length() + words[i].length() + addPrefix.length() >= charactersLimit) { // If adding the next word exceeds or matches the character limit...
+                    line.append(addPrefix).append(words[i]); // Add the last word in the line without a space character
                     wordsUsed++;
                     break; // Break out of this inner loop, since we have reached/exceeded the character limit for this line
-                } else { // If adding this word does not exceed or match the character limit...
-                    line.append(words[i]).append(" "); // Add the word with a space character, continue for loop
+                }
+                else { // If adding this word does not exceed or match the character limit...
+                    line.append(addPrefix).append(words[i]).append(" "); // Add the word with a space character, continue for loop
                     wordsUsed++;
                 }
             }
@@ -234,8 +238,8 @@ public class BasicGui {
         return lore;
     }
 
-    public static ItemStack createItem(Material materialType, String name, List<String> lore){
-        ItemStack item = new ItemStack(materialType);
+    public static ItemStack createItem(Material materialType, String name, List<String> lore, short data){
+        ItemStack item = new ItemStack(materialType,1,  data);
         ItemMeta meta = item.getItemMeta();
         if (name != null) meta.setDisplayName(name);
         if (lore != null) meta.setLore(lore);
@@ -243,8 +247,16 @@ public class BasicGui {
         return item;
     }
 
+    public static ItemStack createItem(Material materialType, String name, short data){
+       return createItem(materialType, name, null, data);
+    }
+
+    public static ItemStack createItem(Material materialType, String name, List<String> lore){
+        return createItem(materialType, name, lore, (short) 0);
+    }
+
     public static ItemStack createItem(Material materialType, String name){
-         return createItem(materialType, name, null);
+         return createItem(materialType, name, null, (short) 0);
     }
 
     public static ItemStack createBackground(short color){
