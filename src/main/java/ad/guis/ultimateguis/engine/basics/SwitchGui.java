@@ -209,7 +209,8 @@ public class SwitchGui {
      * called before page open
      */
     protected boolean pageOnOpen(int pageNumber, Player opener) {
-        if(!pageChanging) return guiOnOpen(pageNumber, opener);
+        if(!pageChanging)
+            return guiOnOpen(pageNumber, opener);
         return true;
     }
 
@@ -222,7 +223,7 @@ public class SwitchGui {
         return true;
     }
 
-    protected boolean guiOnClose(int pagenumber){return true;}
+    protected boolean guiOnClose(int pageNumber){return true;}
     protected boolean guiOnOpen(int pageNumber, Player opener){return true;}
 
     protected void pageAfterOpen(int pageNumber, Player opener){

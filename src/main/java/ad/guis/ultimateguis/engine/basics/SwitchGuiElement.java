@@ -58,9 +58,10 @@ public class SwitchGuiElement extends BasicGui {
 
     @Override
     public void open(Player opener) {
-        if(parentGui.pageOnOpen(this.pageNumber, opener))
+        if(parentGui.pageOnOpen(this.pageNumber, opener)) {
             super.open(opener);
-        parentGui.pageAfterOpen(this.pageNumber, opener);
+            parentGui.pageAfterOpen(this.pageNumber, opener);
+        }
     }
 
     @Override
