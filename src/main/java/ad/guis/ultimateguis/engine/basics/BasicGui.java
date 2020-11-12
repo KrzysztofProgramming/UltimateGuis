@@ -34,14 +34,15 @@ public class BasicGui {
     /**
      * rejestruje event obsługujący dane gui
      * Zwraca wyjątek gdy rowsAmount jest większe od 6 bądź niedodatnie
-     * @param rowsAmout  wielkość gui (inventory)
+     * @param rowsAmount  wielkość gui (inventory)
      * @param title tytuł gui
      */
-    public BasicGui(int rowsAmout, String title, BasicGui previousGui) throws IllegalArgumentException {
+    public BasicGui(int rowsAmount, String title, BasicGui previousGui) throws IllegalArgumentException {
         this.previousGui = previousGui;
-        if(rowsAmout > 6) throw new IllegalArgumentException("Wrong rowsAmount!");
-        gui = Bukkit.createInventory(null, rowsAmout * 9, title);
+        if(rowsAmount > 6) throw new IllegalArgumentException("Wrong rowsAmount!");
+        gui = Bukkit.createInventory(null, rowsAmount * 9, title);
     }
+
     public BasicGui(int rowsAmount, String title) throws IllegalArgumentException {
         this(rowsAmount,title,null);
     }
@@ -84,7 +85,7 @@ public class BasicGui {
     public void autoFill(ItemStack item) {
         for (int i = 0; i < gui.getSize(); i++) {
             if(gui.getItem(i) == null){
-                this.setItem(i,item,null);
+                gui.setItem(i,item);
             }
         }
     }
@@ -98,7 +99,7 @@ public class BasicGui {
         boolean firts = true;
         for (int i = 0; i < gui.getSize(); i++) {
             if (gui.getItem(i) == null) {
-                this.setItem(i, (firts) ? item1 : item2, null);
+                gui.setItem(i, (firts) ? item1 : item2);
             }
             firts = !firts;
         }
@@ -155,7 +156,7 @@ public class BasicGui {
         if (positionX > 8) return false;
         if (positionY > gui.getSize() / 9 - 1) return false;
         gui.setItem(positionY * 9 + positionX, item);
-        actions.put(item, action);
+        if(action!=null) actions.put(item, action);
         return true;
     }
 
@@ -163,7 +164,7 @@ public class BasicGui {
     protected boolean setItem(int position, ItemStack item, Action action) {
         if (position >= gui.getSize()) return false;
         gui.setItem(position, item);
-        actions.put(item, action);
+        if(action!=null) actions.put(item, action);
         return true;
     }
 
@@ -212,9 +213,12 @@ public class BasicGui {
     public void removeFromListeners() {
         UltimateGuis.getInstance().getGuiListener().removeGui(this);
     }
+
+
     public static ArrayList<String> splitLoreNicely(String text, int charactersLimit){
        return splitLoreNicely(text, charactersLimit, null);
     }
+
     public static ArrayList<String> splitLoreNicely(String text, int charactersLimit, String addPrefix) {
         if(addPrefix==null) addPrefix = "";
         ArrayList<String> lore = new ArrayList<>();

@@ -61,7 +61,7 @@ public class SwitchGui {
      */
 
     public boolean addActionItem(ItemStack item, Action action, int position) {
-        if (position >= 3) position++;
+        if (position == 3) return false;
         return this.addActionItem(item, action, position, true);
     }
 
@@ -89,8 +89,8 @@ public class SwitchGui {
                     changePage(0, player);
                 }, true);
             }
-            else{
-                gui.setItem(8,5, fill, null);
+            else {
+                gui.setItem(8,5, fill, null, true);
             }
             if(i - 1 >= 0)
                 gui.setItem(0, 5, previous, player -> {
@@ -217,13 +217,12 @@ public class SwitchGui {
     /**
      * called before page close
      */
-    protected boolean pageOnClose(int pageNumber){
+    protected void pageOnClose(int pageNumber){
         if(!pageChanging)
-           return guiOnClose(pageNumber);
-        return true;
+           guiOnClose(pageNumber);
     }
 
-    protected boolean guiOnClose(int pageNumber){return true;}
+    protected void guiOnClose(int pageNumber){}
     protected boolean guiOnOpen(int pageNumber, Player opener){return true;}
 
     protected void pageAfterOpen(int pageNumber, Player opener){

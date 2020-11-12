@@ -11,13 +11,11 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class GuiListener implements Listener {
     private UltimateGuis plugin;
-    private List<BasicGui> activeGuis = new ArrayList<>();
+    private Set<BasicGui> activeGuis = new HashSet<>();
 
     public void init(){
         this.plugin = UltimateGuis.getInstance();
@@ -31,20 +29,14 @@ public class GuiListener implements Listener {
      * @return
      */
     public boolean addGui(BasicGui gui) {
-        if (!activeGuis.contains(gui)) {
-            activeGuis.add(gui);
-            return true;
-        }
-        return false;
+          return activeGuis.add(gui);
     }
 
     /**
      * zamyka przy reloadzie wszystkie gui
      */
     public void disable() {
-        for (BasicGui gui : activeGuis) {
-            gui.getLastViewer().closeInventory();
-        }
+        activeGuis.forEach(gui -> gui.getLastViewer().closeInventory());
     }
 
     /**
