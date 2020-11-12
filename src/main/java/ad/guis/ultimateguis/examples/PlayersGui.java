@@ -10,21 +10,20 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.List;
 
 /**
  * klasa powinna być tworzona tylko dynamicznie, aby uaktualniać gui z graczami online
  */
 public class PlayersGui extends SwitchGui {
 
-    private HashMap<String, OfflinePlayer> players = new HashMap<>();
+    private List<OfflinePlayer> playerList = new ArrayList<>();
     private OfflineAction action;
-    Collection<? extends OfflinePlayer> playerList;
 
     public PlayersGui(OfflineAction action, Collection<? extends OfflinePlayer> playerList, BasicGui previousGui) {
         this.action = action;
         this.previousGui = previousGui;
-        this.playerList = playerList;
+        this.playerList = new ArrayList<>(playerList);
         init();
     }
 
@@ -65,7 +64,7 @@ public class PlayersGui extends SwitchGui {
     }
 
     public void setPlayers(Collection<? extends OfflinePlayer> playerList) {
-        this.playerList = playerList;
+        this.playerList = new ArrayList<>(playerList);
         init();
     }
 
@@ -74,32 +73,28 @@ public class PlayersGui extends SwitchGui {
         if (playerList == null) {
             playerList = new ArrayList<>();
         }
-        players.clear();
         super.initPages(calcPageCount(playerList.size()), null);
         ItemStack item;
         ItemMeta meta;
+
         int counter = 0;
         int currentPage = 0;
-        for (OfflinePlayer p : playerList) {
+        for (int i=0 ;i<playerList.size(); i++) {
             if (counter >= 45) {
                 currentPage++;
                 counter = 0;
             }
-            players.put(p.getName(), p);
-            item = getPlayerHead(p);
+            item = getPlayerHead(playerList.get(i));
             meta = item.getItemMeta();
-            meta.setDisplayName(p.getName());
+            meta.setDisplayName(playerList.get(i).getName());
             item.setItemMeta(meta);
 
-            ItemStack finalItem = item;
+            final int I = i;
+
             this.guis.get(currentPage).addItem(item, playerWhoClicked -> {
-                OfflinePlayer playerFromHead = players.get(finalItem.getItemMeta().getDisplayName());
+                OfflinePlayer playerFromHead = playerList.get(I);
                 if(playerFromHead != null) {
                     if(action != null) action.action(playerFromHead);
-                }
-                else{
-                   // playerWhoClicked.sendMessage(glc.getSinglePlayerGuiPlayerLeftTheGame());
-                    System.out.println("Player not found");
                 }
             });
             counter++;

@@ -212,7 +212,6 @@ public class BasicGui {
      * przykładowo: PlayerActionGui i SingleAreaGui
      */
     public void removeFromListeners() {
-        UltimateGuis.getInstance().getGuiListener().removeGui(this);
     }
 
 

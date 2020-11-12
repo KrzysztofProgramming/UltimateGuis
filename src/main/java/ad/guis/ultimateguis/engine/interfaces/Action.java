@@ -3,5 +3,5 @@ package ad.guis.ultimateguis.engine.interfaces;
 import org.bukkit.entity.Player;
 
 public interface Action {
-    void action(Player player);
+    void  action(Player player);
 }

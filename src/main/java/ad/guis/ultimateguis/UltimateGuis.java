@@ -85,12 +85,6 @@ public final class UltimateGuis extends JavaPlugin {
     }
 
     public static OfflinePlayer getOfflinePlayer(UUID playerUUID) {
-        OfflinePlayer[] offlinePlayers = Bukkit.getServer().getOfflinePlayers();
-        for (OfflinePlayer offlinePlayer : offlinePlayers) {
-            if (offlinePlayer.getUniqueId().equals(playerUUID)) {
-                return offlinePlayer;
-            }
-        }
-        return null;
+        return Bukkit.getOfflinePlayer(playerUUID);
     }
 }
