@@ -59,23 +59,18 @@ public class GuiListener implements Listener {
             if (e.getInventory().equals(gui.getGui())) {
                 if (e.getWhoClicked() instanceof Player) {
                     Player player = (Player) e.getWhoClicked();
-                    ItemStack stack = e.getCurrentItem();
-                    if (stack == null || stack.getItemMeta() == null)
+                    int slot = e.getRawSlot();
+                    if (slot == -1)
                         return;
-                    for (HashMap.Entry<ItemStack, Action> item : gui.getActions().entrySet()) {
-                        if (item.getKey().equals(stack)) {
+                    for (HashMap.Entry<Integer, Action> item : gui.getActions().entrySet()) {
+                        if (item.getKey() == slot) {
                             if (item.getValue() != null) item.getValue().action(player);
                             break;
-                        } else if (item.getKey().getItemMeta() instanceof SkullMeta) {
-                            if (item.getKey().getItemMeta().getDisplayName().equals(stack.getItemMeta().getDisplayName())) {
-                                if (item.getValue() != null) item.getValue().action(player);
-                                break;
-                            }
                         }
                     }
                 }
-                e.setCancelled(true);
-                break;
+            e.setCancelled(true);
+            break;
             }
         }
     }

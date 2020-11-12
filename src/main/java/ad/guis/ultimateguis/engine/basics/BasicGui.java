@@ -16,7 +16,7 @@ import java.util.List;
 
 public class BasicGui {
     protected Inventory gui;
-    protected HashMap<ItemStack, Action> actions = new HashMap<>();
+    protected HashMap<Integer, Action> actions = new HashMap<>();
     protected BasicGui previousGui;
     protected Player viewer;
 
@@ -54,9 +54,10 @@ public class BasicGui {
      * @return prawda jeśli item został dodany
      */
     public boolean addItem(ItemStack item, Action action) {
-        if (gui.firstEmpty() != -1) {
+        int firstEmptySlot = gui.firstEmpty();
+        if (firstEmptySlot != -1) {
             gui.addItem(item);
-            actions.put(item, action);
+            actions.put(firstEmptySlot, action);
             return true;
         }
         return false;
@@ -156,7 +157,7 @@ public class BasicGui {
         if (positionX > 8) return false;
         if (positionY > gui.getSize() / 9 - 1) return false;
         gui.setItem(positionY * 9 + positionX, item);
-        if(action!=null) actions.put(item, action);
+        if(action!=null) actions.put(positionY * 9 + positionX, action);
         return true;
     }
 
@@ -164,7 +165,7 @@ public class BasicGui {
     protected boolean setItem(int position, ItemStack item, Action action) {
         if (position >= gui.getSize()) return false;
         gui.setItem(position, item);
-        if(action!=null) actions.put(item, action);
+        if(action!=null) actions.put(position, action);
         return true;
     }
 
@@ -193,7 +194,7 @@ public class BasicGui {
      *
      * @return akcje wykonywane po kliknięciu jakiegoś przedmiotu
      */
-    public HashMap<ItemStack, Action> getActions() {
+    public HashMap<Integer, Action> getActions() {
         return actions;
     }
 

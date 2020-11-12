@@ -14,19 +14,28 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class CalendarGui extends BasicGui {
-    GregorianCalendar calendar;
-    CalendarGuiAction calendarGuiAction;
-    Action acceptAction = null;
+    private GregorianCalendar calendar;
+    private CalendarGuiAction calendarGuiAction;
+    private Action acceptAction = null;
 
-    private ItemStack nextYear;
-    private ItemStack previousYear;
-    private ItemStack nextMonth;
-    private ItemStack previousMonth;
-    private ItemStack backgroundBlack;
-    private ItemStack backItem;
-    private ItemStack exitItem;
-    private ItemStack acceptItem;
-
+    private static ItemStack nextYear;
+    private static ItemStack previousYear;
+    private static ItemStack nextMonth;
+    private static ItemStack previousMonth;
+    private static ItemStack backgroundBlack;
+    private static ItemStack backItem;
+    private static ItemStack exitItem;
+    private static ItemStack acceptItem;
+    static {
+        nextYear = BasicGui.createItem(Material.BLAZE_ROD, ChatColor.BOLD + "Next Year");
+        previousYear = BasicGui.createItem(Material.BLAZE_ROD, ChatColor.BOLD + "Previous Year");
+        nextMonth = BasicGui.createItem(Material.ARROW,"Next Month");
+        previousMonth = BasicGui.createItem(Material.ARROW, "Previous Month");
+        backgroundBlack = BasicGui.createBackground(Colors.BLACK);
+        backItem = BasicGui.createItem(Material.WOOD_DOOR, ChatColor.GRAY + "" + ChatColor.BOLD + "Back");
+        exitItem = BasicGui.createItem(Material.BARRIER, ChatColor.RED + "" + ChatColor.BOLD + "Exit");
+        acceptItem = BasicGui.createItem(Material.DOUBLE_PLANT, ChatColor.GREEN + "Accept");
+    }
 
     private String title;
     private List<SpecialDate> specialDateList;
@@ -46,7 +55,7 @@ public class CalendarGui extends BasicGui {
         this.secondSpecialDate = another.secondSpecialDate;
         this.calendar = another.calendar;
         this.acceptAction = another.acceptAction;
-        this.initItems();
+        this.dateFormatter = new SimpleDateFormat("dd.MM.yyyy");
         this.init();
     }
 
@@ -56,7 +65,7 @@ public class CalendarGui extends BasicGui {
         this.calendar = new GregorianCalendar(new Locale("FR", "FR"));
         this.title = title;
         this.calendarGuiAction = action;
-        this.initItems();
+        this.dateFormatter = new SimpleDateFormat("dd.MM.yyyy");
         this.setDate(date);
     }
 
@@ -107,19 +116,6 @@ public class CalendarGui extends BasicGui {
         if(init) this.init();
     }
 
-    private void initItems(){
-        nextYear = BasicGui.createItem(Material.BLAZE_ROD, ChatColor.BOLD + "Next Year");
-        previousYear = BasicGui.createItem(Material.BLAZE_ROD, ChatColor.BOLD + "Previous Year");
-        nextMonth = BasicGui.createItem(Material.ARROW,"Next Month");
-        previousMonth = BasicGui.createItem(Material.ARROW, "Previous Month");
-        backgroundBlack = BasicGui.createBackground(Colors.BLACK);
-        backItem = BasicGui.createItem(Material.WOOD_DOOR, ChatColor.GRAY + "" + ChatColor.BOLD + "Back");
-        exitItem = BasicGui.createItem(Material.BARRIER, ChatColor.RED + "" + ChatColor.BOLD + "Exit");
-        acceptItem = BasicGui.createItem(Material.DOUBLE_PLANT, ChatColor.GREEN + "Accept");
-
-        dateFormatter = new SimpleDateFormat("dd.MM.yyyy");
-
-    }
     private void init(){
 
         this.gui.clear();
