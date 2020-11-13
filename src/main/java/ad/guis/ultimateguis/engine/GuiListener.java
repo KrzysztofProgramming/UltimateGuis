@@ -53,7 +53,7 @@ public class GuiListener implements Listener {
     @EventHandler
     void guiClearer(InventoryCloseEvent e) {
         activeGuis.removeIf(gui ->{
-            gui.removeFromListeners();
+            gui.onClose();
             return gui.getGui().equals(e.getInventory());});
     }
 

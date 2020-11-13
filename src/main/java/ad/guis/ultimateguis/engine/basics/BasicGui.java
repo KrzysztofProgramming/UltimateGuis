@@ -19,6 +19,7 @@ public class BasicGui {
     protected HashMap<Integer, Action> actions = new HashMap<>();
     protected BasicGui previousGui;
     protected Player viewer;
+    private boolean isOpen = false;
 
     /**
      * @return player who last open this Inventory
@@ -128,17 +129,9 @@ public class BasicGui {
                 gui.setItem(i,item);
             }
         }
-        if(this instanceof SwitchGuiElement){
-            for(int i = gui.getSize() - 18; i<gui.getSize() - 9; i++){
-                if(gui.getItem(i)==null){
-                    gui.setItem(i,item);
-                }
-            }
-        } else{
-            for(int i = gui.getSize() - 9; i<gui.getSize(); i++){
-                if(gui.getItem(i)==null){
-                    gui.setItem(i,item);
-                }
+        for(int i = gui.getSize() - 9; i<gui.getSize(); i++){
+            if(gui.getItem(i)==null){
+                gui.setItem(i,item);
             }
         }
         return true;
@@ -176,6 +169,7 @@ public class BasicGui {
      * @param opener
      */
     public void open(Player opener) {
+        this.isOpen = true;
         viewer = opener;
         opener.openInventory(gui);
         UltimateGuis.getInstance().getGuiListener().addGui(this);
@@ -211,7 +205,8 @@ public class BasicGui {
      * np. gdy jakieś bardziej wyspecjalizowane gui jest jeszcze zarejestrowane w innym listenerze
      * przykładowo: PlayerActionGui i SingleAreaGui
      */
-    public void removeFromListeners() {
+    public void onClose() {
+        this.isOpen = false;
     }
 
 

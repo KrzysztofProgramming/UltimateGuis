@@ -1,7 +1,6 @@
 package ad.guis.ultimateguis.engine.basics;
 
 import ad.guis.ultimateguis.engine.interfaces.Action;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -58,17 +57,24 @@ public class SwitchGuiElement extends BasicGui {
 
     @Override
     public void open(Player opener) {
-        if(parentGui.pageOnOpen(this.pageNumber, opener)) {
-            super.open(opener);
-            parentGui.pageAfterOpen(this.pageNumber, opener);
-        }
+        boolean wasOpen = this.parentGui.isOpen;
+
+        super.open(opener);
+        this.parentGui.isOpen = true;
+        this.parentGui.lastOpenedPage = this.pageNumber;
+        if(wasOpen)
+            this.parentGui.pageAfterChange(this.parentGui.getLastClosedPage(), this.pageNumber, opener);
+        else
+            this.parentGui.guiAfterOpen(this.pageNumber, opener);
     }
 
     @Override
-    public void removeFromListeners() {
-        parentGui.pageOnClose(this.pageNumber);
-        super.removeFromListeners();
-        parentGui.pageAfterClose(this.pageNumber);
+    public void onClose() {
+
+        super.onClose();
+        this.parentGui.isOpen = false;
+        this.parentGui.lastClosedPage = this.pageNumber;
+        this.parentGui.guiAfterClose(this.pageNumber);
     }
 
 }

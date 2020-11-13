@@ -7,7 +7,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,12 +15,13 @@ import java.util.List;
  * pozwala stworzyć gui z przełączaniem stron
  */
 public class SwitchGui {
+    public final static int PAGE_CAPACITY = 45;
     protected final UltimateGuis plugin;
     protected List<SwitchGuiElement> guis = new ArrayList<>();
     protected BasicGui previousGui = null;
-    private int lastOpenedPage = 0;
-    private int lastClosedPage = 0;
-    private boolean pageChanging = false;
+    int lastOpenedPage = 0;
+    int lastClosedPage = 0;
+    boolean isOpen = false;
     /**
      * Tworzy Switch Gui
      *
@@ -80,11 +80,11 @@ public class SwitchGui {
             int I = i;
             if(i + 1 < pagesAmount )
                 gui.setItem(8, 5, next, player -> {
-                    changePage(I + 1, player);
+                    open(I + 1, player);
                 }, true);
             else if(pagesAmount > 1){
                 gui.setItem(8, 5, next, player -> {
-                    changePage(0, player);
+                    open(0, player);
                 }, true);
             }
             else {
@@ -92,7 +92,7 @@ public class SwitchGui {
             }
             if(i - 1 >= 0)
                 gui.setItem(0, 5, previous, player -> {
-                    changePage(I - 1, player);
+                    open(I - 1, player);
                     }, true);
             else{
                 gui.setItem(0, 5, fill, null, true);
@@ -104,13 +104,10 @@ public class SwitchGui {
         }
         if(pagesAmount > 1)
             guis.get(0).setItem(0, 5, previous, player -> {
-                changePage(pagesAmount - 1, player);
+                open(pagesAmount - 1, player);
             }, true);
 
-        ItemStack back = new ItemStack(Material.NETHER_STAR);
-        ItemMeta meta = back.getItemMeta();
-        meta.setDisplayName(ChatColor.BOLD + "Back");
-        back.setItemMeta(meta);
+        ItemStack back = BasicGui.createItem(Material.NETHER_STAR, ChatColor.BOLD + "Back");
 
         this.addActionItem(back, player -> {
             if (previousGui != null) previousGui.open(player);
@@ -118,10 +115,7 @@ public class SwitchGui {
         },3,true);
     }
 
-    protected void changePage(int number, Player player){
-        pageChanging = true;
-        this.getGui(number).open(player);
-    }
+
 
     public int getLastOpenedPage() {
         return lastOpenedPage;
@@ -131,48 +125,32 @@ public class SwitchGui {
         return lastClosedPage;
     }
 
-    /**
-     * @return zwraca ilość stron, tak jak w tablicach
-     */
     public int getSize(){
         return guis.size();
     }
 
-    /**
-     *
-     * @return prawda, jesli jakiekolwiek ze stron jest otwarta przez kogoś
-     */
     public boolean isOpen(){
-        boolean open = false;
-        for(int i=0; i<guis.size() && !open; i++){
-            open = guis.get(i).isOpen();
-        }
-        return open;
+        return isOpen;
     }
-    /**
-     * Pozwala na dostęp do poszczególnych stron
-     * @param page numer strony do zwrócenia
-     * @return gui o numerze page jeśli takie istnieje, w przeciwnym wypadku zwraca null
-     */
-    public BasicGui getGui(int page){
-        if(guis.size() == 0) throw new IndexOutOfBoundsException("SwitchGui is empty");
+
+    public SwitchGuiElement getGui(int page){
+        if(guis.isEmpty()) throw new IndexOutOfBoundsException("SwitchGui is empty");
         if(page < 0) return this.guis.get(0);
         if(page > this.guis.size()) return this.guis.get(this.guis.size() - 1);
         return this.guis.get(page);
     }
 
-    public boolean isPageChanging(){
-        return pageChanging;
+    public boolean open(Player opener){
+        return this.open(this.getLastClosedPage(), opener);
     }
 
-    /**
-     * Otwiera pierwszą stronę gui
-     * @param opener gracz, ktory otwiera gui
-     * @return fałsz jeśli gui jest puste
-     */
-    public boolean open(Player opener){
+    public SwitchGuiElement getRecentPage(){
+        return this.getGui(this.getLastClosedPage());
+    }
+
+    public boolean open(int pageNumber, Player opener){
         if(!guis.isEmpty()){
-            guis.get(0).open(opener);
+            this.getGui(pageNumber).open(opener);
             return true;
         }
         return false;
@@ -184,51 +162,18 @@ public class SwitchGui {
 
     public void setPreviousGui(BasicGui previousGui) {
         this.previousGui = previousGui;
-        for (SwitchGuiElement gui : guis) {
-            gui.setPreviousGui(previousGui);
-        }
+        guis.forEach(gui -> gui.setPreviousGui(previousGui));
     }
 
     /**
-     * called before page open
+     * can be override in subcalsses, calling open in this function cause infinity recursion
      */
-    protected boolean pageOnOpen(int pageNumber, Player opener) {
-        if(!pageChanging)
-            return guiOnOpen(pageNumber, opener);
-        return true;
-    }
+    protected void pageAfterChange(int previousPage, int newPage, Player opener) {}
 
-    /**
-     * called before page close
-     */
-    protected void pageOnClose(int pageNumber){
-        if(!pageChanging)
-           guiOnClose(pageNumber);
-    }
-
-    protected void guiOnClose(int pageNumber){}
-    protected boolean guiOnOpen(int pageNumber, Player opener){return true;}
-
-    protected void pageAfterOpen(int pageNumber, Player opener){
-        lastOpenedPage = pageNumber;
-        if(pageChanging){
-            pageChanging = false;
-        }
-        else{
-            guiAfterOpen(pageNumber, opener);
-        };
-    }
-
-    protected void pageAfterClose(int pageNumber){
-        if(!pageChanging) guiAfterClose(pageNumber);
-        lastClosedPage = pageNumber;
-    }
-
-    protected void guiAfterClose(int pageNumber){}
+    protected void guiAfterClose(int previousPage){}
     protected void guiAfterOpen(int pageNumber, Player opener){}
 
-
     public static int calcPageCount(int itemsCount){
-        return (itemsCount - 1) / 45 + 1;
+        return (itemsCount - 1) / PAGE_CAPACITY + 1;
     }
 }
