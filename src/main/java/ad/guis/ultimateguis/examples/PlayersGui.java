@@ -20,6 +20,10 @@ public class PlayersGui extends SwitchGui {
     private List<OfflinePlayer> playerList = new ArrayList<>();
     private OfflineAction action;
 
+    public PlayersGui(){
+
+    }
+
     public PlayersGui(OfflineAction action, Collection<? extends OfflinePlayer> playerList, BasicGui previousGui) {
         this.action = action;
         this.previousGui = previousGui;

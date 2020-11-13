@@ -3,7 +3,6 @@ package ad.guis.ultimateguis.engine.basics;
 import ad.guis.ultimateguis.Colors;
 import ad.guis.ultimateguis.UltimateGuis;
 import ad.guis.ultimateguis.engine.interfaces.Action;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -11,7 +10,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -122,7 +120,7 @@ public class SwitchGui {
 
     protected void changePage(int number, Player player){
         pageChanging = true;
-        guis.get(number).open(player);
+        this.getGui(number).open(player);
     }
 
     public int getLastOpenedPage() {
@@ -147,7 +145,7 @@ public class SwitchGui {
     public boolean isOpen(){
         boolean open = false;
         for(int i=0; i<guis.size() && !open; i++){
-            open = open || guis.get(i).isOpen();
+            open = guis.get(i).isOpen();
         }
         return open;
     }
@@ -157,28 +155,14 @@ public class SwitchGui {
      * @return gui o numerze page jeśli takie istnieje, w przeciwnym wypadku zwraca null
      */
     public BasicGui getGui(int page){
-        if(page < 0 || page >= guis.size()){
-            return null;
-        }
-        return guis.get(page);
+        if(guis.size() == 0) throw new IndexOutOfBoundsException("SwitchGui is empty");
+        if(page < 0) return this.guis.get(0);
+        if(page > this.guis.size()) return this.guis.get(this.guis.size() - 1);
+        return this.guis.get(page);
     }
 
     public boolean isPageChanging(){
         return pageChanging;
-    }
-
-    /**
-     * otwiera wybraną stronę
-     * @param page numer strony
-     * @param opener gracz otwierający gui
-     * @return prawda jeśli jest taka strona
-     */
-    public boolean open(int page, Player opener){
-        if(page < guis.size()){
-            guis.get(page).open(opener);
-            return true;
-        }
-        return false;
     }
 
     /**
@@ -243,24 +227,6 @@ public class SwitchGui {
     protected void guiAfterClose(int pageNumber){}
     protected void guiAfterOpen(int pageNumber, Player opener){}
 
-    protected void switchToLastClosedPage(Player player){
-
-        if(this.getLastClosedPage() >= this.getSize()) {
-            changePage(this.getSize() - 1, player);
-        }
-        else {
-            changePage(this.getLastClosedPage(), player);
-        }
-    }
-
-    protected void switchToLastOpenedPage(Player player){
-        if(this.getLastOpenedPage() >= this.getSize()) {
-            changePage(this.getSize() - 1, player);
-        }
-        else {
-            changePage(this.getLastOpenedPage(), player);
-        }
-    }
 
     public static int calcPageCount(int itemsCount){
         return (itemsCount - 1) / 45 + 1;
