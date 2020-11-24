@@ -12,6 +12,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 public class BasicGui {
@@ -235,6 +236,49 @@ public class BasicGui {
             lore.add(line.toString()); // Add the line of text to the list
         }
         return lore;
+    }
+
+    public static List<String> newSplitLoreNicely(String lore, int characterLimit, String prefix){
+        if(characterLimit <= 0 ) characterLimit = 1;
+        if(prefix == null) prefix = "";
+        String[] loreList = lore.split(" ");
+        StringBuilder currentColor = new StringBuilder();
+        List<String> splitedLore = new LinkedList<>();
+        StringBuilder lorePart = new StringBuilder();
+        List<Character> actualColorsList = new ArrayList<>();
+        int addedColorsLength = 0;
+
+        for(int i=0; i<loreList.length; i++){
+            if(lorePart.length() == 0){
+                lorePart.append(prefix).append(currentColor.toString()).append(loreList[i]);
+                addedColorsLength = currentColor.length();
+            }
+            else if(lorePart.length() + loreList[i].length() - addedColorsLength > characterLimit){
+                splitedLore.add(lorePart.toString());
+                lorePart.setLength(0);
+                --i;
+                continue;
+            }
+            else{
+                lorePart.append(' ').append(loreList[i]);
+            }
+            for(int j = 0; j < loreList[i].length(); j++){
+                if(loreList[i].charAt(j) == '&' &&
+                        j + 1 < loreList[i].length() &&
+                        !actualColorsList.contains(loreList[i].charAt(j + 1)))//ignore repetitions
+                {
+                    if(loreList[i].charAt(j + 1) == 'r' || loreList[i].charAt(j + 1) == 'R'){
+                        currentColor.setLength(0);
+                        actualColorsList.clear();
+                        continue;
+                    }
+                    currentColor.append('&').append(loreList[i].charAt(j + 1));
+                    actualColorsList.add(loreList[i].charAt(j + 1));
+                }
+            }
+        }
+        splitedLore.add(lorePart.toString());
+        return splitedLore;
     }
 
     public static ItemStack createItem(Material materialType, String name, List<String> lore, short data){
