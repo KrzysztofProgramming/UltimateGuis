@@ -10,10 +10,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class BasicGui {
     protected Inventory gui;
@@ -310,5 +307,193 @@ public class BasicGui {
         return item;
     }
 
+
+    private static final String colorsChars = "0123456789aAbBcCdDeEfF";
+    private static final String formattingChars = "kKlLmMnNoO";
+    private static final String resetChars = "rR";
+
+
+    public static List<String> simpleSplitLore(String... lore){
+        return new ArrayList<>(Arrays.asList(lore));
+    }
+
+    public static List<String> splitLore(String lore, int characterLimit){
+        return splitLore(lore, characterLimit, '§');
+    }
+
+    public static List<String> splitLoreWithConversion(String lore, int characterLimit){
+        return splitLore(lore.replace('&', '§'), characterLimit, '§');
+    }
+
+
+    public static List<String> splitLore(String lore, int characterLimit, char colorChar){
+        if(characterLimit <= 0 ) characterLimit = 1;
+
+        String currentColors = "";
+        String currentFormatting = "";
+        String reset = "";
+
+        StringBuilder singleLine = new StringBuilder();
+        List<String> splitedLore = new ArrayList<>();
+
+        String[] loreWords = lore.split(" ");
+        int position = 0;
+
+        for(int i=0; i<loreWords.length; i++){
+            String word = loreWords[i];
+            String[] wrappedWord;
+            if(lengthWithoutSpecialCharacters(word, colorChar) > characterLimit) {
+               wrappedWord = splitStartingFrom(word, characterLimit - position, characterLimit, colorChar);
+            }
+            else{
+                wrappedWord = new String[1];
+                wrappedWord[0] = word;
+            }
+
+            for (int j=0; j<wrappedWord.length; j++) {
+                word = wrappedWord[j];
+                String[] fixedFormatting = fixFormatting(word, currentFormatting, colorChar);
+                word = fixedFormatting[0];
+                int wordLength = lengthWithoutSpecialCharacters(word, colorChar);
+
+                if (singleLine.length() == 0) {
+                    singleLine.append(reset).append(currentColors).append(currentFormatting).append(word);
+                } else if (lengthWithoutSpecialCharacters(singleLine.toString(), colorChar) +
+                        wordLength + 1 > characterLimit) {
+                    splitedLore.add(singleLine.toString());
+                    singleLine.setLength(0);
+                    --j;
+                    continue;
+                } else {
+                    singleLine.append(' ').append(word);
+                }
+
+                if (reset.isEmpty()) reset = reloadReset(word, colorChar);
+
+                currentFormatting = fixedFormatting[1];
+                currentColors = getColorsFromPhrase(word, currentColors, colorChar);
+                position = lengthWithoutSpecialCharacters(singleLine.toString(), colorChar);
+            }
+        }
+        if(singleLine.length() !=0) splitedLore.add(singleLine.toString());
+        return splitedLore;
+    }
+
+    private static int lengthWithoutSpecialCharacters(String phrase, char colorChar){
+        int colorsCounter = 0;
+        for(int i = 0; i + 1 < phrase.length(); i++) {
+            if (phrase.charAt(i) == colorChar) {
+                colorsCounter += 2;
+            }
+        }
+        return phrase.length() - colorsCounter;
+    }
+
+    private static String customSubstring(String phrase, int start, int stop, char colorChar){
+        StringBuilder builder = new StringBuilder();
+        int counter = 0;
+        boolean ignore = false;
+        for(int i=0; i<phrase.length(); i++){
+            if(counter >= start && counter < stop){
+                builder.append(phrase.charAt(i));
+            }
+            if(phrase.charAt(i) == colorChar){
+                ignore = true;
+            }
+            else if(ignore){
+                ignore = false;
+            }
+            else{
+                counter++;
+            }
+        }
+        return builder.toString();
+    }
+
+    private static String[] splitStartingFrom(String phrase, int start, int characterLimit, char colorChar){
+        int phraseLength = lengthWithoutSpecialCharacters(phrase, colorChar);
+        if(characterLimit <=0 ) characterLimit = 1;
+        if(start > phraseLength) start = phraseLength;
+
+        String[] splited = new String[((start!=0)? 1 : 0) + (phraseLength - start) / characterLimit +
+                (((phraseLength - start) % characterLimit != 0) ? 1 : 0)];
+        splited[0] = customSubstring(phrase, 0, start, colorChar);
+        int indexCounter = (start!=0)? 1 : 0;
+
+        for(int i = start; i < phraseLength; i+=characterLimit){
+            splited[indexCounter] = (customSubstring(phrase, i, i+characterLimit, colorChar));
+            indexCounter++;
+        }
+        return splited;
+    }
+
+    private static String getColorsFromPhrase(String phrase, String currentColors, char colorChar){
+        for(int i = 0; i + 1 < phrase.length(); i++){
+            if(phrase.charAt(i) == colorChar){
+                if(isReset(phrase.charAt(i + 1))){
+                    currentColors = "";
+                }
+                else if(isColor(phrase.charAt(i + 1))){
+                    currentColors = replaceColor(currentColors, phrase.charAt(i + 1), colorChar);
+                }
+            }
+        }
+        return currentColors;
+    }
+
+    private static String replaceColor(String phrase, char newColor, char colorChar){
+        for(int i=0; i+1 < phrase.length(); i++){
+            if(phrase.charAt(i) == colorChar && isColor(phrase.charAt(i + 1))){
+                return phrase.replace(phrase.charAt(i + 1), newColor);
+            }
+        }
+        return phrase + colorChar + newColor;
+    }
+
+
+    //first fixed phare, second - changedFormatting
+    private static String[] fixFormatting(String phrase, String formatting, char colorChar){
+        StringBuilder formattingBuilder = new StringBuilder(formatting);
+
+        for(int i = 0; i + 1 < phrase.length(); i++){
+            if(phrase.charAt(i) == colorChar) {
+                if (isColor(phrase.charAt(i + 1))) {
+                    String regex = colorChar + "" + phrase.charAt(i + 1);
+                    phrase = phrase.replaceAll(regex, regex + formattingBuilder.toString());
+                }
+                else if(isFormatting(phrase.charAt(i + 1)) && formattingBuilder.indexOf(phrase.charAt(i + 1) + "") < 0){
+                    formattingBuilder.append(colorChar).append(phrase.charAt(i + 1));
+                }
+                else if(isReset(phrase.charAt(i + 1))){
+                    formattingBuilder.setLength(0);
+                }
+            }
+        }
+        String[] returnedValue= new String[2];
+        returnedValue[0] = phrase;
+        returnedValue[1] = formattingBuilder.toString();
+        return returnedValue;
+    }
+
+    private static boolean isColor(char character){
+        return colorsChars.indexOf(character) >= 0;
+    }
+
+    private static boolean isFormatting(char character){
+        return formattingChars.indexOf(character) >= 0;
+    }
+
+    private static boolean isReset(char character){
+        return resetChars.indexOf(character) >= 0;
+    }
+
+    private static String reloadReset(String phrase, char colorChar){
+        for(int i=0 ;i + 1<phrase.length(); i++){
+            if(phrase.charAt(i) == colorChar && isReset(phrase.charAt(i + 1))){
+                return colorChar + "" + resetChars.charAt(0);
+            }
+        }
+        return "";
+    }
 
 }

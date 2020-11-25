@@ -1,8 +1,10 @@
 package ad.guis.ultimateguis;
 
 import ad.guis.ultimateguis.engine.GuiListener;
+import ad.guis.ultimateguis.engine.basics.BasicGui;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -32,10 +34,12 @@ public final class UltimateGuis extends JavaPlugin {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-            if(sender instanceof Player){
+            if(sender instanceof Player) {
                 Player player = (Player) sender;
-                Location loc = player.getLocation();
-                player.teleport(loc.add(setModule(loc.getDirection(), 50)));
+                player.getInventory().addItem(BasicGui.createItem(Material.NETHER_STAR, "elo",
+                        BasicGui.splitLoreWithConversion(
+                                "&c&lWrong format: &f&l<playerName> <yyyy/MM/dd HH:mm:ss> " +
+                                "<yyyy/MM/dd HH:mm:ss>", 20)));
             }
         return true;
     }
