@@ -1,13 +1,10 @@
 package ad.guis.ultimateguis;
 
-import ad.guis.ultimateguis.engine.GuiListener;
-import ad.guis.ultimateguis.engine.basics.BasicGui;
+import ad.guis.ultimateguis.engine.basics.GuiListener;
 import ad.guis.ultimateguis.examples.calendargui.CalendarGui;
 import ad.guis.ultimateguis.examples.calendargui.CalendarGuiAction;
 import ad.guis.ultimateguis.examples.calendargui.SpecialDate;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -16,15 +13,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
 import java.time.LocalDate;
-import java.time.YearMonth;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
 public final class UltimateGuis extends JavaPlugin {
     private static UltimateGuis instance;
-    private GuiListener guiListener = new GuiListener();
+    private final GuiListener guiListener = new GuiListener();
 
     public GuiListener getGuiListener() {
         return guiListener;

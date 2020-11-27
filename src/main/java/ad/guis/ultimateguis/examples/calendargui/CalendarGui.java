@@ -3,40 +3,41 @@ package ad.guis.ultimateguis.examples.calendargui;
 import ad.guis.ultimateguis.Colors;
 import ad.guis.ultimateguis.engine.basics.BasicGui;
 import ad.guis.ultimateguis.engine.interfaces.Action;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.WeekFields;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 public class CalendarGui extends BasicGui {
     private YearMonth currentMonth;
     private CalendarGuiAction calendarGuiAction;
     private Action acceptAction = null;
 
-    private static ItemStack nextYear;
-    private static ItemStack previousYear;
-    private static ItemStack nextMonth;
-    private static ItemStack previousMonth;
-    private static ItemStack backgroundBlack;
-    private static ItemStack backItem;
-    private static ItemStack exitItem;
-    private static ItemStack acceptItem;
+    private static final ItemStack nextYear;
+    private static final ItemStack previousYear;
+    private static final ItemStack nextMonth;
+    private static final ItemStack previousMonth;
+    private static final ItemStack backgroundBlack;
+    private static final ItemStack backItem;
+    private static final ItemStack exitItem;
+    private static final ItemStack acceptItem;
 
     static {
         nextYear = BasicGui.createItem(Material.BLAZE_ROD, ChatColor.BOLD + "Next Year");
         previousYear = BasicGui.createItem(Material.BLAZE_ROD, ChatColor.BOLD + "Previous Year");
-        nextMonth = BasicGui.createItem(Material.ARROW,"Next Month");
+        nextMonth = BasicGui.createItem(Material.ARROW, "Next Month");
         previousMonth = BasicGui.createItem(Material.ARROW, "Previous Month");
         backgroundBlack = BasicGui.createBackground(Colors.BLACK);
         backItem = BasicGui.createItem(Material.WOOD_DOOR, ChatColor.GRAY + "" + ChatColor.BOLD + "Back");
@@ -44,11 +45,11 @@ public class CalendarGui extends BasicGui {
         acceptItem = BasicGui.createItem(Material.DOUBLE_PLANT, ChatColor.GREEN + "Accept");
     }
 
-    private String title;
+    private final String title;
     private List<SpecialDate> specialDateList;
     private SpecialDate firstSpecialDate;
     private SpecialDate secondSpecialDate;
-    private DateTimeFormatter dateFormatter;
+    private final DateTimeFormatter dateFormatter;
 
 
     public CalendarGui(CalendarGui another){
@@ -220,7 +221,7 @@ public class CalendarGui extends BasicGui {
         meta.setDisplayName(createItemName(specialDate.date, Colors.toChatColor(specialDate.color)));
 
         if(!specialDate.comment.isEmpty()) {
-            meta.setLore(BasicGui.splitLoreNicely(specialDate.comment, 15));
+            meta.setLore(BasicGui.splitLore(specialDate.comment, 20));
         }
         stack.setItemMeta(meta);
 

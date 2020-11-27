@@ -58,11 +58,14 @@ public class SwitchGuiElement extends BasicGui {
     @Override
     public void open(Player opener) {
         boolean wasOpen = this.parentGui.isOpen;
+        this.parentGui.duringOpening = true;
 
         super.open(opener);
         this.parentGui.isOpen = true;
         this.parentGui.lastOpenedPage = this.pageNumber;
-        if(wasOpen)
+        this.parentGui.duringOpening = false;
+
+        if (wasOpen)
             this.parentGui.pageAfterChange(this.parentGui.getLastClosedPage(), this.pageNumber, opener);
         else
             this.parentGui.guiAfterOpen(this.pageNumber, opener);
@@ -70,11 +73,9 @@ public class SwitchGuiElement extends BasicGui {
 
     @Override
     public void onClose() {
-
         super.onClose();
         this.parentGui.isOpen = false;
         this.parentGui.lastClosedPage = this.pageNumber;
-        this.parentGui.guiAfterClose(this.pageNumber);
+        if (!this.parentGui.duringOpening) this.parentGui.guiOnClose(this.pageNumber);
     }
-
 }

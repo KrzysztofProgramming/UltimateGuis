@@ -22,6 +22,7 @@ public class SwitchGui {
     int lastOpenedPage = 0;
     int lastClosedPage = 0;
     boolean isOpen = false;
+    boolean duringOpening = false;
     /**
      * Tworzy Switch Gui
      *
@@ -115,8 +116,6 @@ public class SwitchGui {
         },3,true);
     }
 
-
-
     public int getLastOpenedPage() {
         return lastOpenedPage;
     }
@@ -170,8 +169,11 @@ public class SwitchGui {
      */
     protected void pageAfterChange(int previousPage, int newPage, Player opener) {}
 
-    protected void guiAfterClose(int previousPage){}
-    protected void guiAfterOpen(int pageNumber, Player opener){}
+    protected void guiOnClose(int previousPage) {
+    }
+
+    protected void guiAfterOpen(int pageNumber, Player opener) {
+    }
 
     public static int calcPageCount(int itemsCount){
         return (itemsCount - 1) / PAGE_CAPACITY + 1;
