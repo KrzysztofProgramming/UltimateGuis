@@ -2,6 +2,9 @@ package ad.guis.ultimateguis;
 
 import ad.guis.ultimateguis.engine.GuiListener;
 import ad.guis.ultimateguis.engine.basics.BasicGui;
+import ad.guis.ultimateguis.examples.calendargui.CalendarGui;
+import ad.guis.ultimateguis.examples.calendargui.CalendarGuiAction;
+import ad.guis.ultimateguis.examples.calendargui.SpecialDate;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -12,7 +15,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
+import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,10 +42,13 @@ public final class UltimateGuis extends JavaPlugin {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
             if(sender instanceof Player) {
                 Player player = (Player) sender;
-                player.getInventory().addItem(BasicGui.createItem(Material.NETHER_STAR, "elo",
-                        BasicGui.splitLoreWithConversion(
-                                "&c&lWrong format: &f&l<playerName> <yyyy/MM/dd HH:mm:ss> " +
-                                "<yyyy/MM/dd HH:mm:ss>", 20)));
+                CalendarGui gui = new CalendarGui();
+                gui.setCalendarGuiAction(new CalendarGuiAction() {
+                    @Override
+                    public void action(LocalDate date, Player player, CalendarGui gui) {
+                        gui.setSecondSpecialDate(new SpecialDate(date));
+                    }
+                });
             }
         return true;
     }

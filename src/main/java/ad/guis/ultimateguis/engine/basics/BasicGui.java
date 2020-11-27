@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -18,6 +19,15 @@ public class BasicGui {
     protected BasicGui previousGui;
     protected Player viewer;
     private boolean isOpen = false;
+    private long lastClick = 0;
+
+    public long getLastClick() {
+        return lastClick;
+    }
+
+    public void setLastClick(long lastClick) {
+        this.lastClick = lastClick;
+    }
 
     /**
      * @return player who last open this Inventory
@@ -191,7 +201,7 @@ public class BasicGui {
     }
 
     boolean isOpen() {
-        return !gui.getViewers().isEmpty();
+        return isOpen;
     }
 
     public int getRowsAmount() {
@@ -281,6 +291,7 @@ public class BasicGui {
     public static ItemStack createItem(Material materialType, String name, List<String> lore, short data){
         ItemStack item = new ItemStack(materialType,1,  data);
         ItemMeta meta = item.getItemMeta();
+        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         if (name != null) meta.setDisplayName(name);
         if (lore != null) meta.setLore(lore);
         item.setItemMeta(meta);
@@ -300,11 +311,7 @@ public class BasicGui {
     }
 
     public static ItemStack createBackground(short color){
-        ItemStack item = new ItemStack(Material.STAINED_GLASS_PANE, 1, color);
-        ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(ChatColor.BOLD + "");
-        item.setItemMeta(meta);
-        return item;
+        return createItem(Material.STAINED_GLASS_PANE, "", color);
     }
 
 
@@ -312,6 +319,22 @@ public class BasicGui {
     private static final String formattingChars = "kKlLmMnNoO";
     private static final String resetChars = "rR";
 
+
+    public static String clearColors(String phrase){
+        return clearColors(phrase, '§');
+    }
+
+    public static String clearColors(String phrase, char colorChar){
+        StringBuilder builder = new StringBuilder();
+        for(int i=0 ;i<phrase.length(); i++){
+            if(phrase.charAt(i) == colorChar){
+                i++;
+                continue;
+            }
+            builder.append(phrase.charAt(i));
+        }
+        return builder.toString();
+    }
 
     public static List<String> simpleSplitLore(String... lore){
         return new ArrayList<>(Arrays.asList(lore));

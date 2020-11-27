@@ -2,14 +2,15 @@ package ad.guis.ultimateguis.examples.calendargui;
 
 import ad.guis.ultimateguis.Colors;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class SpecialDate{
-    public Date date;
+    public LocalDate date;
     public String comment;
     public short color;
 
-    public SpecialDate(Date date, String comment, short color) {
+    public SpecialDate(LocalDate date, String comment, short color) {
        /* if((date.getTime() % 86400)!=0){
             GregorianCalendar calendar = new GregorianCalendar();
             calendar.setTime(date);
@@ -25,11 +26,11 @@ public class SpecialDate{
         this.color = color;
     }
 
-    public SpecialDate(Date date, String comment){
+    public SpecialDate(LocalDate date, String comment){
         this(date, comment, Colors.ORANGE);
     }
 
-    public SpecialDate(Date date){
+    public SpecialDate(LocalDate date){
         this(date, "");
     }
 }
