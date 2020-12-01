@@ -5,6 +5,5 @@ import org.bukkit.OfflinePlayer;
 /**
  * pozwala na przesyłanie akcji dotyczących graczy offline
  */
-public interface OfflineAction {
-    void action(OfflinePlayer offlinePlayer);
+public interface OfflineAction extends BasicAction<OfflinePlayer> {
 }

@@ -6,7 +6,6 @@ import ad.guis.ultimateguis.engine.interfaces.Action;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 public class ConfirmGui extends BasicGui {
     private final static ItemStack accept;
@@ -16,25 +15,15 @@ public class ConfirmGui extends BasicGui {
     private static final ItemStack backgroundGreen;
 
     static {
-        ItemMeta meta;
-
-        accept = new ItemStack(Material.INK_SACK, 1, (short) 10);
-        meta = accept.getItemMeta();
-        meta.setDisplayName(ChatColor.GREEN + "" + ChatColor.BOLD + "✓");
-        accept.setItemMeta(meta);
-
-        deny = new ItemStack(Material.INK_SACK, 1, (short) 1); //ma być 1
-        meta = deny.getItemMeta();
-        meta.setDisplayName(ChatColor.RED + "" + ChatColor.BOLD + "✕");
-        deny.setItemMeta(meta);
-
+        accept = BasicGui.createItem(Material.INK_SACK, ChatColor.GREEN + "" + ChatColor.BOLD + "✓", (short) 10);
+        deny = BasicGui.createItem(Material.INK_SACK, ChatColor.RED + "" + ChatColor.BOLD + "✕", (short) 1); //ma być 1
         backgroundBlack = BasicGui.createBackground(Colors.BLACK);
         backgroundRed = BasicGui.createBackground(Colors.RED);
-        backgroundGreen =BasicGui.createBackground(Colors.GREEN);
+        backgroundGreen = BasicGui.createBackground(Colors.GREEN);
     }
 
-    private Action accepted;
-    private Action denied;
+    private final Action accepted;
+    private final Action denied;
 
     /**
      * @param message  tytuł gui będący równocześnie pytaniem/zdaniem do potwierdzenia

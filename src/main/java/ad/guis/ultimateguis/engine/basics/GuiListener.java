@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class GuiListener implements Listener {
     private UltimateGuis plugin;
     private final Set<BasicGui> activeGuis = new HashSet<>();
-    private int clickCooldown = 100; //in millis;
+    private static final int clickCooldown = 100; //in millis;
     private boolean locked = false;
 
     public void init() {
@@ -42,17 +42,17 @@ public class GuiListener implements Listener {
         else activeGuis.remove(gui);
     }
 
-    public synchronized void setClickCooldown(int cooldown){
-        clickCooldown = cooldown;
-    }
+//    public synchronized void setClickCooldown(int cooldown){
+//        clickCooldown = cooldown;
+//    }
 
-    public int getClickCooldown(){
+    public static int getClickCooldown() {
         return clickCooldown;
     }
 
     @EventHandler
     void InventoryClick(InventoryClickEvent e) {
-        if(!(e.getWhoClicked() instanceof Player) || e.getRawSlot() < 0) return;
+        if (!(e.getWhoClicked() instanceof Player) || e.getRawSlot() < 0) return;
 
         this.lock();
         List<BasicGui> filteredGuis = activeGuis.stream().filter(gui ->
