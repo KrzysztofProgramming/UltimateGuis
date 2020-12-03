@@ -1,7 +1,7 @@
 package ad.guis.ultimateguis.engine.interfaces;
 
-import java.util.Collection;
+import java.util.List;
 
 public interface RefreshFunction<T> {
-    Collection<? extends T> getCollection();
+    List<? extends T> getList();
 }

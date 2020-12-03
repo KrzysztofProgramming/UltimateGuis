@@ -4,6 +4,8 @@ import ad.guis.ultimateguis.engine.basics.BasicGui;
 import ad.guis.ultimateguis.engine.interfaces.OfflineAction;
 import org.bukkit.Bukkit;
 
+import java.util.ArrayList;
+
 public class OnlinePlayersGui extends PlayersGui {
 
     public OnlinePlayersGui(BasicGui previousGui) {
@@ -16,6 +18,6 @@ public class OnlinePlayersGui extends PlayersGui {
 
     public OnlinePlayersGui(OfflineAction action, BasicGui previousGui, String title) {
         super(action, null, previousGui, title);
-        this.setRefreshFunction(Bukkit::getOnlinePlayers);
+        this.setRefreshFunction(() -> new ArrayList<>(Bukkit.getOnlinePlayers()));
     }
 }

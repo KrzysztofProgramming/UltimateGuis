@@ -5,3 +5,6 @@ commands:
   test:
     usage: /test
     description: test command
+  elo:
+    usage: /elo
+    description: elo

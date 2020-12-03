@@ -53,7 +53,6 @@ public class GuiListener implements Listener {
     @EventHandler
     void InventoryClick(InventoryClickEvent e) {
         if (!(e.getWhoClicked() instanceof Player) || e.getRawSlot() < 0) return;
-
         this.lock();
         List<BasicGui> filteredGuis = activeGuis.stream().filter(gui ->
             e.getInventory().equals(gui.getGui()))

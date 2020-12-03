@@ -3,6 +3,7 @@ package ad.guis.ultimateguis.examples;
 import ad.guis.ultimateguis.engine.basics.BasicGui;
 import ad.guis.ultimateguis.engine.basics.SwitchGui;
 import ad.guis.ultimateguis.engine.interfaces.BasicAction;
+import ad.guis.ultimateguis.engine.interfaces.ListableGui;
 import ad.guis.ultimateguis.engine.interfaces.RefreshFunction;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -12,7 +13,8 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public abstract class ListSwitchGui<T> extends SwitchGui {
+@Deprecated
+public abstract class ListSwitchGui<T> extends SwitchGui implements ListableGui<T> {
 
     protected Collection<? extends T> collection = new ArrayList<>();
     protected BasicAction<T> action;
@@ -31,15 +33,15 @@ public abstract class ListSwitchGui<T> extends SwitchGui {
         this(null, null, previousGui, title);
     }
 
-    public ListSwitchGui(BasicAction<T> action, Collection<? extends T> playerList, BasicGui previousGui, String title) {
+    public ListSwitchGui(BasicAction<T> action, RefreshFunction<T> refreshFunction, BasicGui previousGui, String title) {
         this.title = title;
         this.action = action;
         this.previousGui = previousGui;
-        this.collection = playerList;
+        this.refreshFunction = refreshFunction;
         init();
     }
 
-    public ListSwitchGui(BasicAction<T> action, Collection<? extends T> playerList) {
+    public ListSwitchGui(BasicAction<T> action, RefreshFunction<T> playerList) {
         this(action, playerList, null, null);
     }
 
@@ -71,25 +73,28 @@ public abstract class ListSwitchGui<T> extends SwitchGui {
         return lastClicker;
     }
 
+    @Override
     public BasicAction<T> getAction() {
         return action;
     }
 
+    @Override
     public void setAction(BasicAction<T> action) {
         this.action = action;
     }
 
+    @Override
+    public RefreshFunction<T> getRefreshFunction() {
+        return refreshFunction;
+    }
+
+    @Override
     public void setRefreshFunction(RefreshFunction<T> refreshFunction) {
         this.refreshFunction = refreshFunction;
     }
 
     public Collection<? extends T> getCollection() {
         return this.collection;
-    }
-
-    public void setCollection(Collection<? extends T> playerList) {
-        this.collection = playerList;
-        init();
     }
 
     public abstract ItemStack getDescriptionItem(T element);
@@ -124,7 +129,8 @@ public abstract class ListSwitchGui<T> extends SwitchGui {
     protected void guiAfterOpen(int pageNumber, Player opener) {
         super.guiAfterOpen(pageNumber, opener);
         if (refreshFunction == null) return;
-        this.setCollection(refreshFunction.getCollection());
+        this.collection = refreshFunction.getList();
+        init();
         this.open(opener);
     }
 }

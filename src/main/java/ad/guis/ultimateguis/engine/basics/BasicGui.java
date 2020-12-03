@@ -14,7 +14,8 @@ import java.util.*;
 
 public class BasicGui {
     protected Inventory gui;
-    protected HashMap<Integer, Action> actions = new HashMap<>();
+    private final Map<Integer, Action> tempMap = new HashMap<>();
+    protected Map<Integer, Action> actions = new HashMap<>();
     protected BasicGui previousGui;
     protected Player viewer;
     private boolean isOpen = false;
@@ -84,12 +85,25 @@ public class BasicGui {
         gui = Bukkit.createInventory(null, rowsAmount * 9, title);
     }
 
+    protected BasicGui() {
+    }
+
+    public static Inventory createInventory(int rowsCount, String title) {
+        return Bukkit.createInventory(null, 9 * rowsCount, title);
+    }
+
     public BasicGui(int rowsAmount, String title) throws IllegalArgumentException {
         this(rowsAmount, title, null);
     }
 
+    public static Inventory createFullInventory(String title) {
+        return BasicGui.createInventory(6, title);
+    }
+
     void unlock() {
         this.locked = false;
+        this.actions.putAll(tempMap);
+        tempMap.clear();
     }
 
     /**
@@ -227,10 +241,9 @@ public class BasicGui {
     }
 
     /**
-     *
      * @return akcje wykonywane po kliknięciu jakiegoś przedmiotu
      */
-    public HashMap<Integer, Action> getActions() {
+    public Map<Integer, Action> getActions() {
         return actions;
     }
 
@@ -260,7 +273,7 @@ public class BasicGui {
     private void putToActions(int position, Action action) {
         if (action == null) return;
         if (locked)
-            Bukkit.getScheduler().scheduleSyncDelayedTask(UltimateGuis.getInstance(), () -> actions.put(position, action));
+           this.tempMap.put(position, action);
         else this.actions.put(position, action);
     }
 

@@ -1,19 +1,20 @@
 package ad.guis.ultimateguis.examples;
 
 import ad.guis.ultimateguis.engine.basics.BasicGui;
+import ad.guis.ultimateguis.engine.basics.ListGui;
 import ad.guis.ultimateguis.engine.interfaces.OfflineAction;
+import ad.guis.ultimateguis.engine.interfaces.PlayersRefreshFunction;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Collection;
-
 /**
  * klasa powinna być tworzona tylko dynamicznie, aby uaktualniać gui z graczami online
  */
-public class PlayersGui extends ListSwitchGui<OfflinePlayer> {
+public class PlayersGui extends ListGui<OfflinePlayer> {
 
     public PlayersGui() {
+        this(null);
     }
 
     public PlayersGui(BasicGui previousGui) {
@@ -24,8 +25,8 @@ public class PlayersGui extends ListSwitchGui<OfflinePlayer> {
         this(null, null, previousGui, title);
     }
 
-    public PlayersGui(OfflineAction action, Collection<? extends OfflinePlayer> playerList, BasicGui previousGui, String title) {
-        super(action, playerList, previousGui, title);
+    public PlayersGui(OfflineAction action, PlayersRefreshFunction refreshFunction, BasicGui previousGui, String title) {
+        super(action, refreshFunction, previousGui, title);
     }
 
     @Override

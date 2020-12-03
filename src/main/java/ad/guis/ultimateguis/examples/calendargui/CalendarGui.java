@@ -6,6 +6,7 @@ import ad.guis.ultimateguis.engine.interfaces.Action;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -67,7 +68,6 @@ public class CalendarGui extends BasicGui {
         this.title = title;
         this.calendarGuiAction = action;
         this.dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        init();
     }
 
     public CalendarGui(YearMonth month, CalendarGuiAction action, String title){
@@ -278,7 +278,8 @@ public class CalendarGui extends BasicGui {
                 item = exitItem;
                 break;
             }
-            default: return false;
+            default:
+                return false;
         }
         meta = item.getItemMeta();
         meta.setDisplayName(name);
@@ -286,4 +287,9 @@ public class CalendarGui extends BasicGui {
         return true;
     }
 
+    @Override
+    public void open(Player opener) {
+        init();
+        super.open(opener);
+    }
 }
