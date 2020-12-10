@@ -57,7 +57,7 @@ public abstract class ListGui<T> extends BasicGui implements ListableGui<T> {
         }, 3);
     }
 
-    protected void init(Player player) {
+    private void init(Player player) {
         if (title == null) title = "";
         this.gui = BasicGui.createFullInventory(title + " [" + (pageNumber + 1) + '/' + pageCount + ']');
         int counter = 0;
@@ -80,7 +80,6 @@ public abstract class ListGui<T> extends BasicGui implements ListableGui<T> {
         initSwitchItems();
         initActionItems();
         bottomBackground();
-        player.openInventory(this.gui);
     }
 
     @Override
@@ -94,10 +93,12 @@ public abstract class ListGui<T> extends BasicGui implements ListableGui<T> {
             this.setItem(0, 5, previousItem, playerWhoClick -> {
                 previousPage();
                 init(playerWhoClick);
+                playerWhoClick.openInventory(this.gui);
             });
             this.setItem(8, 5, nextItem, playerWhoClick -> {
                 nextPage();
                 init(playerWhoClick);
+                playerWhoClick.openInventory(this.gui);
             });
         }
     }
@@ -140,13 +141,6 @@ public abstract class ListGui<T> extends BasicGui implements ListableGui<T> {
         return lastClicker;
     }
 
-    protected void initAll(Player opener) {
-        if (refreshFunction != null)
-            this.list = this.refreshFunction.getList();
-        calcPageCount();
-        init(opener);
-    }
-
     @Override
     public RefreshFunction<T> getRefreshFunction() {
         return refreshFunction;
@@ -169,7 +163,10 @@ public abstract class ListGui<T> extends BasicGui implements ListableGui<T> {
 
     @Override
     public void open(Player opener) {
-        initAll(opener);
+        if (refreshFunction != null)
+            this.list = this.refreshFunction.getList();
+        calcPageCount();
+        init(opener);
         super.open(opener);
     }
 

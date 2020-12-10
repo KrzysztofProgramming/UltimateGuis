@@ -22,34 +22,6 @@ public class BasicGui {
     private long lastClick = 0;
     private boolean locked = false; //blocks changings items
 
-    @Deprecated
-    public static ArrayList<String> splitLoreNicely(String text, int charactersLimit) {
-        return splitLoreNicely(text, charactersLimit, null);
-    }
-
-    @Deprecated
-    public static ArrayList<String> splitLoreNicely(String text, int charactersLimit, String addPrefix) {
-        if (addPrefix == null) addPrefix = "";
-        ArrayList<String> lore = new ArrayList<>();
-        String[] words = text.split(" "); // Get the "words" in the line of text by splitting the space characters
-        int wordsUsed = 0; // A counter for how many words have been placed in lines so far
-        while (wordsUsed < words.length) { // Repeat this process until all words have been placed into separate lines
-            StringBuilder line = new StringBuilder(); // The line that will be added to the lore list
-            for (int i = wordsUsed; i < words.length; i++) { // For each remaining word in the array
-                if (line.length() + words[i].length() + addPrefix.length() >= charactersLimit) { // If adding the next word exceeds or matches the character limit...
-                    line.append(addPrefix).append(words[i]); // Add the last word in the line without a space character
-                    wordsUsed++;
-                    break; // Break out of this inner loop, since we have reached/exceeded the character limit for this line
-                } else { // If adding this word does not exceed or match the character limit...
-                    line.append(addPrefix).append(words[i]).append(" "); // Add the word with a space character, continue for loop
-                    wordsUsed++;
-                }
-            }
-            lore.add(line.toString()); // Add the line of text to the list
-        }
-        return lore;
-    }
-
     public long getLastClick() {
         return lastClick;
     }
@@ -277,51 +249,8 @@ public class BasicGui {
         else this.actions.put(position, action);
     }
 
-    public static List<String> newSplitLoreNicely(String lore, int characterLimit, String prefix) {
-        if (characterLimit <= 0) characterLimit = 1;
-        if (prefix == null) prefix = "";
-        String[] loreList = lore.split(" ");
-        StringBuilder currentColor = new StringBuilder();
-        List<String> splitedLore = new LinkedList<>();
-        StringBuilder lorePart = new StringBuilder();
-        List<Character> actualColorsList = new ArrayList<>();
-        int addedColorsLength = 0;
-
-        for(int i=0; i<loreList.length; i++){
-            if(lorePart.length() == 0){
-                lorePart.append(prefix).append(currentColor.toString()).append(loreList[i]);
-                addedColorsLength = currentColor.length();
-            }
-            else if(lorePart.length() + loreList[i].length() - addedColorsLength > characterLimit){
-                splitedLore.add(lorePart.toString());
-                lorePart.setLength(0);
-                --i;
-                continue;
-            }
-            else{
-                lorePart.append(' ').append(loreList[i]);
-            }
-            for(int j = 0; j < loreList[i].length(); j++){
-                if(loreList[i].charAt(j) == '&' &&
-                        j + 1 < loreList[i].length() &&
-                        !actualColorsList.contains(loreList[i].charAt(j + 1)))//ignore repetitions
-                {
-                    if(loreList[i].charAt(j + 1) == 'r' || loreList[i].charAt(j + 1) == 'R'){
-                        currentColor.setLength(0);
-                        actualColorsList.clear();
-                        continue;
-                    }
-                    currentColor.append('&').append(loreList[i].charAt(j + 1));
-                    actualColorsList.add(loreList[i].charAt(j + 1));
-                }
-            }
-        }
-        splitedLore.add(lorePart.toString());
-        return splitedLore;
-    }
-
-    public static ItemStack createItem(Material materialType, String name, List<String> lore, short data){
-        ItemStack item = new ItemStack(materialType,1,  data);
+    public static ItemStack createItem(Material materialType, String name, List<String> lore, short data) {
+        ItemStack item = new ItemStack(materialType, 1, data);
         ItemMeta meta = item.getItemMeta();
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         if (name != null) meta.setDisplayName(name);
@@ -330,15 +259,27 @@ public class BasicGui {
         return item;
     }
 
-    public static ItemStack createItem(Material materialType, String name, short data){
-       return createItem(materialType, name, null, data);
+    public static ItemStack createSegmentedItem(Material materialType, String nameWithLore, short data) {
+        List<String> splited = splitLore(nameWithLore, 30);
+        if (splited.size() == 0) BasicGui.createItem(materialType, nameWithLore, data);
+        String name = splited.get(0);
+        splited.remove(0);
+        return BasicGui.createItem(materialType, name, splited, data);
     }
 
-    public static ItemStack createItem(Material materialType, String name, List<String> lore){
+    public static ItemStack createSegmentedItem(Material materialType, String nameWithLore) {
+        return createSegmentedItem(materialType, nameWithLore, (short) 0);
+    }
+
+    public static ItemStack createItem(Material materialType, String name, short data) {
+        return createItem(materialType, name, null, data);
+    }
+
+    public static ItemStack createItem(Material materialType, String name, List<String> lore) {
         return createItem(materialType, name, lore, (short) 0);
     }
 
-    public static ItemStack createItem(Material materialType, String name){
+    public static ItemStack createItem(Material materialType, String name) {
          return createItem(materialType, name, null, (short) 0);
     }
 
