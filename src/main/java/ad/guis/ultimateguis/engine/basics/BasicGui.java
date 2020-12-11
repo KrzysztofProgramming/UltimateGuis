@@ -260,8 +260,8 @@ public class BasicGui {
     }
 
     public static ItemStack createSegmentedItem(Material materialType, String nameWithLore, short data) {
-        List<String> splited = splitLore(nameWithLore, 30);
-        if (splited.size() == 0) BasicGui.createItem(materialType, nameWithLore, data);
+        List<String> splited = splitLore(nameWithLore, 25);
+        if (splited.size() == 0) return BasicGui.createItem(materialType, nameWithLore, data);
         String name = splited.get(0);
         splited.remove(0);
         return BasicGui.createItem(materialType, name, splited, data);
@@ -287,11 +287,9 @@ public class BasicGui {
         return createItem(Material.STAINED_GLASS_PANE, "", color);
     }
 
-
     private static final String colorsChars = "0123456789aAbBcCdDeEfF";
     private static final String formattingChars = "kKlLmMnNoO";
     private static final String resetChars = "rR";
-
 
     public static String clearColors(String phrase){
         return clearColors(phrase, '§');
@@ -339,7 +337,7 @@ public class BasicGui {
             String word = loreWords[i];
             String[] wrappedWord;
             if(lengthWithoutSpecialCharacters(word, colorChar) > characterLimit) {
-               wrappedWord = splitStartingFrom(word, characterLimit - position, characterLimit, colorChar);
+                wrappedWord = splitStartingFrom(word, characterLimit - position, characterLimit, colorChar);
             }
             else{
                 wrappedWord = new String[1];
@@ -348,6 +346,7 @@ public class BasicGui {
 
             for (int j=0; j<wrappedWord.length; j++) {
                 word = wrappedWord[j];
+                word = shortColors(word, colorChar);
                 String[] fixedFormatting = fixFormatting(word, currentFormatting, colorChar);
                 word = fixedFormatting[0];
                 int wordLength = lengthWithoutSpecialCharacters(word, colorChar);
@@ -356,7 +355,7 @@ public class BasicGui {
                     singleLine.append(reset).append(currentColors).append(currentFormatting).append(word);
                 } else if (lengthWithoutSpecialCharacters(singleLine.toString(), colorChar) +
                         wordLength + 1 > characterLimit) {
-                    splitedLore.add(singleLine.toString());
+                    splitedLore.add(shortColors(singleLine.toString(), colorChar));
                     singleLine.setLength(0);
                     --j;
                     continue;
@@ -371,13 +370,34 @@ public class BasicGui {
                 position = lengthWithoutSpecialCharacters(singleLine.toString(), colorChar);
             }
         }
-        if(singleLine.length() !=0) splitedLore.add(singleLine.toString());
+        if (singleLine.length() != 0) splitedLore.add(shortColors(singleLine.toString(), colorChar));
         return splitedLore;
     }
 
-    private static int lengthWithoutSpecialCharacters(String phrase, char colorChar){
+    private static String shortColors(String phrase, char colorChar) {
+        char currentColor = ' ';
+        StringBuilder newString = new StringBuilder();
+        for (int i = 0; i < phrase.length(); i++) {
+            if (phrase.charAt(i) == colorChar && i + 1 < phrase.length()) {
+                char specialChar = phrase.charAt(i + 1);
+                if (isColor(specialChar)) {
+                    if (specialChar == currentColor) {
+                        i++;
+                        continue;
+                    }
+                    currentColor = specialChar;
+                } else if (isReset(specialChar)) {
+                    currentColor = ' ';
+                }
+            }
+            newString.append(phrase.charAt(i));
+        }
+        return newString.toString();
+    }
+
+    private static int lengthWithoutSpecialCharacters(String phrase, char colorChar) {
         int colorsCounter = 0;
-        for(int i = 0; i + 1 < phrase.length(); i++) {
+        for (int i = 0; i + 1 < phrase.length(); i++) {
             if (phrase.charAt(i) == colorChar) {
                 colorsCounter += 2;
             }
