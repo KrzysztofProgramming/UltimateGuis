@@ -227,6 +227,10 @@ public class BasicGui {
         return gui.getSize() / 9;
     }
 
+    public static ItemStack createBackItem(String name) {
+        return BasicGui.createItem(Material.WOOD_DOOR, name);
+    }
+
     /**
      * funkcja, która powinna być nadpisywana, jeżeli gui wymaga specjalnego usunięcia przy zamknięciu
      * np. gdy jakieś bardziej wyspecjalizowane gui jest jeszcze zarejestrowane w innym listenerze
@@ -280,25 +284,29 @@ public class BasicGui {
     }
 
     public static ItemStack createItem(Material materialType, String name) {
-         return createItem(materialType, name, null, (short) 0);
+        return createItem(materialType, name, null, (short) 0);
     }
 
-    public static ItemStack createBackground(short color){
+    public static ItemStack createBackground(short color) {
         return createItem(Material.STAINED_GLASS_PANE, "", color);
+    }
+
+    public static ItemStack createExitItem(String name) {
+        return BasicGui.createItem(Material.BARRIER, name);
+    }
+
+    public static String clearColors(String phrase) {
+        return clearColors(phrase, '§');
     }
 
     private static final String colorsChars = "0123456789aAbBcCdDeEfF";
     private static final String formattingChars = "kKlLmMnNoO";
     private static final String resetChars = "rR";
 
-    public static String clearColors(String phrase){
-        return clearColors(phrase, '§');
-    }
-
-    public static String clearColors(String phrase, char colorChar){
+    public static String clearColors(String phrase, char colorChar) {
         StringBuilder builder = new StringBuilder();
-        for(int i=0 ;i<phrase.length(); i++){
-            if(phrase.charAt(i) == colorChar){
+        for (int i = 0; i < phrase.length(); i++) {
+            if (phrase.charAt(i) == colorChar) {
                 i++;
                 continue;
             }
@@ -307,15 +315,20 @@ public class BasicGui {
         return builder.toString();
     }
 
-    public static List<String> simpleSplitLore(String... lore){
+    protected void backOrClose(Player p) {
+        if (previousGui != null) previousGui.open(p);
+        else p.closeInventory();
+    }
+
+    public static List<String> simpleSplitLore(String... lore) {
         return new ArrayList<>(Arrays.asList(lore));
     }
 
-    public static List<String> splitLore(String lore, int characterLimit){
+    public static List<String> splitLore(String lore, int characterLimit) {
         return splitLore(lore, characterLimit, '§');
     }
 
-    public static List<String> splitLoreWithConversion(String lore, int characterLimit){
+    public static List<String> splitLoreWithConversion(String lore, int characterLimit) {
         return splitLore(lore.replace('&', '§'), characterLimit, '§');
     }
 

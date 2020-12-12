@@ -51,10 +51,7 @@ public abstract class ListGui<T> extends BasicGui implements ListableGui<T> {
         this.previousGui = previousGui;
         this.title = title;
 
-        this.setActionItem(backItem, playerWhoClick -> {
-            if (previousGui != null) previousGui.open(playerWhoClick);
-            else playerWhoClick.closeInventory();
-        }, 3);
+        this.setActionItem(backItem, this::backOrClose, 3);
     }
 
     private void init(Player player) {
