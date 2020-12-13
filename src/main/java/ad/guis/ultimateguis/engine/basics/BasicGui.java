@@ -3,6 +3,7 @@ package ad.guis.ultimateguis.engine.basics;
 import ad.guis.ultimateguis.UltimateGuis;
 import ad.guis.ultimateguis.engine.interfaces.Action;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -281,7 +282,7 @@ public class BasicGui {
     }
 
     public static ItemStack createBackground(short color) {
-        return createItem(Material.STAINED_GLASS_PANE, "", color);
+        return createItem(Material.STAINED_GLASS_PANE, ChatColor.MAGIC + "", color);
     }
 
     public static ItemStack createExitItem(String name) {
