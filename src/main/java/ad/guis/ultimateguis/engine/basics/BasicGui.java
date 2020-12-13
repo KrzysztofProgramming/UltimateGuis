@@ -20,7 +20,6 @@ public class BasicGui {
     protected Player viewer;
     private boolean isOpen = false;
     private long lastClick = 0;
-    private boolean locked = false; //blocks changings items
 
     public long getLastClick() {
         return lastClick;
@@ -30,9 +29,6 @@ public class BasicGui {
         this.lastClick = lastClick;
     }
 
-    void lock() {
-        this.locked = true;
-    }
 
     /**
      * @return player who last open this Inventory
@@ -72,11 +68,6 @@ public class BasicGui {
         return BasicGui.createInventory(6, title);
     }
 
-    void unlock() {
-        this.locked = false;
-        this.actions.putAll(tempMap);
-        tempMap.clear();
-    }
 
     /**
      * zwraca previous gui, należy sprawdzić czy to nie null
@@ -246,11 +237,13 @@ public class BasicGui {
         return true;
     }
 
-    private void putToActions(int position, Action action) {
-        if (action == null) return;
-        if (locked)
-           this.tempMap.put(position, action);
-        else this.actions.put(position, action);
+    public static List<String> splitLore(String lore, int characterLimit, char colorChar) {
+        String[] splitedByLine = lore.split("\n");
+        List<String> newLore = new ArrayList<>();
+        for (String s : splitedByLine) {
+            newLore.addAll(splitLoreBasic(s, characterLimit, colorChar));
+        }
+        return newLore;
     }
 
     public static ItemStack createItem(Material materialType, String name, List<String> lore, short data) {
@@ -332,9 +325,8 @@ public class BasicGui {
         return splitLore(lore.replace('&', '§'), characterLimit, '§');
     }
 
-
-    public static List<String> splitLore(String lore, int characterLimit, char colorChar){
-        if(characterLimit <= 0 ) characterLimit = 1;
+    private static List<String> splitLoreBasic(String lore, int characterLimit, char colorChar) {
+        if (characterLimit <= 0) characterLimit = 1;
 
         String currentColors = "";
         String currentFormatting = "";
@@ -385,6 +377,11 @@ public class BasicGui {
         }
         if (singleLine.length() != 0) splitedLore.add(shortColors(singleLine.toString(), colorChar));
         return splitedLore;
+    }
+
+    private void putToActions(int position, Action action) {
+        if (action == null) return;
+        this.actions.put(position, action);
     }
 
     private static String shortColors(String phrase, char colorChar) {

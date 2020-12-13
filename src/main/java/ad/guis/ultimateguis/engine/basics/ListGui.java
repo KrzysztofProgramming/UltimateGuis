@@ -12,9 +12,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public abstract class ListGui<T> extends BasicGui implements ListableGui<T> {
 
@@ -31,8 +31,7 @@ public abstract class ListGui<T> extends BasicGui implements ListableGui<T> {
         backgroundItem = BasicGui.createBackground(Colors.GRAY);
     }
 
-    private final LinkedHashMap<Integer, Pair<ItemStack, Action>> specialItems = new LinkedHashMap<>();
-    private final List<Integer> tempList = new LinkedList<>();
+    private final Map<Integer, Pair<ItemStack, Action>> specialItems = new HashMap<>();
     protected String title;
     protected List<? extends T> list = new ArrayList<>();
     protected RefreshFunction<T> refreshFunction;
@@ -54,19 +53,16 @@ public abstract class ListGui<T> extends BasicGui implements ListableGui<T> {
         this.setActionItem(backItem, this::backOrClose, 3);
     }
 
-    private void init(Player player) {
+    private void init() {
         if (title == null) title = "";
         this.gui = BasicGui.createFullInventory(title + " [" + (pageNumber + 1) + '/' + pageCount + ']');
         int counter = 0;
-        tempList.clear();
-        tempList.addAll(actions.keySet());
+        this.actions.clear();
 
         for (int i = pageNumber * CAPACITY; i < (pageNumber + 1) * CAPACITY; i++) {
             if (this.list.size() <= i) break;
             T element = this.list.get(i);
             ItemStack descriptionItem = getDescriptionItem(element);
-
-            tempList.remove((Integer) counter);
             this.setItem(counter, descriptionItem, playerWhoClick -> {
                 lastClicker = playerWhoClick;
                 ListGui.this.action.action(element);
@@ -79,22 +75,16 @@ public abstract class ListGui<T> extends BasicGui implements ListableGui<T> {
         bottomBackground();
     }
 
-    @Override
-    void unlock() {
-        actions.keySet().removeAll(tempList);
-        super.unlock();
-    }
-
     private void initSwitchItems() {
         if (pageCount > 1) {
             this.setItem(0, 5, previousItem, playerWhoClick -> {
                 previousPage();
-                init(playerWhoClick);
+                init();
                 playerWhoClick.openInventory(this.gui);
             });
             this.setItem(8, 5, nextItem, playerWhoClick -> {
                 nextPage();
-                init(playerWhoClick);
+                init();
                 playerWhoClick.openInventory(this.gui);
             });
         }
@@ -160,15 +150,17 @@ public abstract class ListGui<T> extends BasicGui implements ListableGui<T> {
 
     @Override
     public void open(Player opener) {
-        if (refreshFunction != null)
+        if (refreshFunction != null) {
             this.list = this.refreshFunction.getList();
+            if (this.list == null) this.list = new ArrayList<>();
+        }
         calcPageCount();
-        init(opener);
+        init();
         super.open(opener);
     }
 
     private void calcPageCount() {
-        this.pageCount = (this.list.size() - 1) / CAPACITY + 1;
+        this.pageCount = Math.max((this.list.size() - 1) / CAPACITY + 1, 1);
         if (pageNumber >= pageCount) pageNumber = pageCount - 1;
     }
 }

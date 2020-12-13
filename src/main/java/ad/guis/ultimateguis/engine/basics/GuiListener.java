@@ -1,6 +1,7 @@
 package ad.guis.ultimateguis.engine.basics;
 
 import ad.guis.ultimateguis.UltimateGuis;
+import ad.guis.ultimateguis.engine.interfaces.Action;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -52,8 +53,10 @@ public class GuiListener implements Listener {
 
     @EventHandler
     void InventoryClick(InventoryClickEvent e) {
+
         if (!(e.getWhoClicked() instanceof Player) || e.getRawSlot() < 0) return;
         this.lock();
+
         List<BasicGui> filteredGuis = activeGuis.stream().filter(gui ->
             e.getInventory().equals(gui.getGui()))
                 .collect(Collectors.toList());
@@ -63,11 +66,9 @@ public class GuiListener implements Listener {
         filteredGuis.stream().filter(gui -> gui.getLastClick() + clickCooldown < System.currentTimeMillis())
                 .forEach(
                         gui -> {
-                            gui.lock();
-                            gui.getActions().entrySet().stream()
-                                    .filter(intActionEntry -> (intActionEntry.getKey() == e.getRawSlot() && intActionEntry.getValue() != null))
-                                    .forEach(intActionEntry -> intActionEntry.getValue().action((Player) e.getWhoClicked()));
-                            gui.unlock();
+                            Action action = gui.getActions().get(e.getRawSlot());
+                            if (action == null) return;
+                            action.action((Player) e.getWhoClicked());
                             gui.setLastClick(System.currentTimeMillis());
                         });
     }

@@ -47,19 +47,11 @@ public class CalendarGui extends BasicGui {
     }
 
     private final String title;
-    private List<SpecialDate> specialDateList;
+    private final List<SpecialDate> specialDateList;
     private SpecialDate firstSpecialDate;
     private SpecialDate secondSpecialDate;
     private final DateTimeFormatter dateFormatter;
 
-
-    public CalendarGui(CalendarGui another){
-        this(another.currentMonth, another.calendarGuiAction, another.title, another.previousGui);
-        this.specialDateList = another.specialDateList;
-        this.firstSpecialDate = another.firstSpecialDate;
-        this.secondSpecialDate = another.secondSpecialDate;
-        this.acceptAction = another.acceptAction;
-    }
 
     public CalendarGui(YearMonth month, CalendarGuiAction action, String title, BasicGui previousGui) {
         super(6,'[' + DateTimeFormatter.ofPattern("MM.yyyy").format(month) + "] " + title , previousGui);
@@ -87,72 +79,73 @@ public class CalendarGui extends BasicGui {
 
     public void setFirstSpecialDate(SpecialDate firstSpecialDate){
         this.firstSpecialDate = firstSpecialDate;
-        this.init();
+        this.init(false);
     }
 
     public void setSecondSpecialDate(SpecialDate secondSpecialDate){
         this.secondSpecialDate = secondSpecialDate;
-        this.init();
+        this.init(false);
     }
 
     public void setSpecialDateRange(SpecialDate firstSpecialDate, SpecialDate secondSpecialDate){
         this.firstSpecialDate = firstSpecialDate;
         this.secondSpecialDate = secondSpecialDate;
-        this.init();
+        this.init(false);
     }
 
     public void addSpecialDate(SpecialDate specialDate){
         this.specialDateList.add(specialDate);
-        this.init();
+        this.init(false);
     }
 
     public void addSpecialDates(List<SpecialDate> specialDates){
         this.specialDateList.addAll(specialDates);
-        this.init();
+        this.init(false);
     }
 
     public void setAcceptAction(Action action){
         boolean init = (action!=null && acceptAction==null) || (action==null && acceptAction!=null);
         this.acceptAction = action;
-        if(init) this.init();
+        if (init) this.init(false);
     }
 
-    private void init(){
-
-        this.gui.clear();
+    private void init(boolean newTitle) {
         int dayInMonth = currentMonth.lengthOfMonth();
+        if (newTitle)
+            this.gui = BasicGui.createFullInventory('[' + DateTimeFormatter.ofPattern("MM.yyyy").format(currentMonth) + "] " + title);
 
-        for(int i=1; i <=dayInMonth; i++ ){
+        this.actions.clear();
+        for (int i = 1; i <= dayInMonth; i++) {
             LocalDate date = currentMonth.atDay(i);
             ItemStack itemStack = getDateItem(date);
 
             this.setItem(date.getDayOfWeek().getValue(),
-                    date.get(WeekFields.of(DayOfWeek.MONDAY, 1).weekOfMonth()) - 1 ,
+                    date.get(WeekFields.of(DayOfWeek.MONDAY, 1).weekOfMonth()) - 1,
                     itemStack, player -> {
-                if(calendarGuiAction == null) return;
+                        if (calendarGuiAction == null) return;
                 calendarGuiAction.action(LocalDate.parse(clearColors(itemStack.getItemMeta().getDisplayName()),
                         dateFormatter), player, CalendarGui.this);
             });
         }
 
         this.setItem(8, 5, nextMonth, player -> {
-           this.currentMonth = this.currentMonth.plus(1, ChronoUnit.MONTHS);
-           new CalendarGui(this).open(player);
+            this.currentMonth = this.currentMonth.plus(1, ChronoUnit.MONTHS);
+            this.open(player);
         });
 
         this.setItem(0,5, previousMonth, player -> {
             this.currentMonth = this.currentMonth.minus(1, ChronoUnit.MONTHS);
-            new CalendarGui(this).open(player);
+            this.open(player);
         });
 
         this.setItem(0,4, previousYear, player -> {
             this.currentMonth = this.currentMonth.minus(1, ChronoUnit.YEARS);
-            new CalendarGui(this).open(player);
+            this.open(player);
         });
 
         this.setItem(8,4, nextYear, player -> {
             this.currentMonth = this.currentMonth.plus(1, ChronoUnit.YEARS);
-            new CalendarGui(this).open(player);
+            this.open(player);
         });
 
         this.setItem(0,1, backItem, player -> {
@@ -289,7 +282,7 @@ public class CalendarGui extends BasicGui {
 
     @Override
     public void open(Player opener) {
-        init();
+        init(true);
         super.open(opener);
     }
 }
