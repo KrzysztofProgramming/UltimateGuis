@@ -1,9 +1,9 @@
 package ad.guis.ultimateguis.engine.interfaces;
 
-import org.bukkit.OfflinePlayer;
+import java.util.UUID;
 
 /**
  * pozwala na przesyłanie akcji dotyczących graczy offline
  */
-public interface OfflineAction extends BasicAction<OfflinePlayer> {
+public interface OfflineAction extends BasicAction<UUID> {
 }

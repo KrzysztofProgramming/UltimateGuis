@@ -4,14 +4,16 @@ import ad.guis.ultimateguis.engine.basics.BasicGui;
 import ad.guis.ultimateguis.engine.basics.ListGui;
 import ad.guis.ultimateguis.engine.interfaces.OfflineAction;
 import ad.guis.ultimateguis.engine.interfaces.PlayersRefreshFunction;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.UUID;
 
 /**
  * klasa powinna być tworzona tylko dynamicznie, aby uaktualniać gui z graczami online
  */
-public class PlayersGui extends ListGui<OfflinePlayer> {
+public class PlayersGui extends ListGui<UUID> {
 
     public PlayersGui() {
         this(null);
@@ -30,8 +32,8 @@ public class PlayersGui extends ListGui<OfflinePlayer> {
     }
 
     @Override
-    public ItemStack getDescriptionItem(OfflinePlayer player) {
-        return BasicGui.createItem(Material.SKULL_ITEM, player.getName(), (short) 3);
+    public ItemStack getDescriptionItem(UUID player) {
+        return BasicGui.createItem(Material.SKULL_ITEM, Bukkit.getOfflinePlayer(player).getName(), (short) 3);
        /* boolean isInVersion = Arrays.stream(Material.values())
                 .map(Material::name).collect(Collectors.toList()).contains("PLAYER_HEAD");
 

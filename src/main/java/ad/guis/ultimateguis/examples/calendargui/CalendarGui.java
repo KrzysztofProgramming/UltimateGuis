@@ -3,6 +3,8 @@ package ad.guis.ultimateguis.examples.calendargui;
 import ad.guis.ultimateguis.Colors;
 import ad.guis.ultimateguis.engine.basics.BasicGui;
 import ad.guis.ultimateguis.engine.interfaces.Action;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
@@ -26,14 +28,30 @@ public class CalendarGui extends BasicGui {
     private CalendarGuiAction calendarGuiAction;
     private Action acceptAction = null;
 
+    @Getter
+    @Setter
     private static final ItemStack nextYear;
-    private static final ItemStack previousYear;
-    private static final ItemStack nextMonth;
-    private static final ItemStack previousMonth;
-    private static final ItemStack backgroundBlack;
-    private static final ItemStack backItem;
-    private static final ItemStack exitItem;
-    private static final ItemStack acceptItem;
+    @Getter
+    @Setter
+    private static ItemStack previousYear;
+    @Getter
+    @Setter
+    private static ItemStack nextMonth;
+    @Getter
+    @Setter
+    private static ItemStack previousMonth;
+    @Getter
+    @Setter
+    private static ItemStack backgroundBlack;
+    @Getter
+    @Setter
+    private static ItemStack backItem;
+    @Getter
+    @Setter
+    private static ItemStack exitItem;
+    @Getter
+    @Setter
+    private static ItemStack acceptItem;
 
     static {
         nextYear = BasicGui.createItem(Material.BLAZE_ROD, ChatColor.BOLD + "Next Year");
@@ -240,45 +258,6 @@ public class CalendarGui extends BasicGui {
     public final static int NEXT_MONTH = 3;
     public final static int BACK = 4;
     public final static int EXIT = 5;
-    /**
-     * @param itemID 0-previousYear, 1-nextYear, 2-previousMonth, 3-nextMonth, 4-back, 5-exit
-     */
-    public static boolean setItemName(int itemID, String name){
-        ItemMeta meta;
-        ItemStack item;
-        switch (itemID){
-            case PREVIOUS_YEAR:{
-                item = previousYear;
-                break;
-            }
-            case NEXT_YEAR:{
-               item = nextYear;
-                break;
-            }
-            case PREVIOUS_MONTH:{
-                item = previousMonth;
-                break;
-            }
-            case NEXT_MONTH:{
-                item = nextMonth;
-                break;
-            }
-            case BACK:{
-                item = backItem;
-                break;
-            }
-            case EXIT:{
-                item = exitItem;
-                break;
-            }
-            default:
-                return false;
-        }
-        meta = item.getItemMeta();
-        meta.setDisplayName(name);
-        item.setItemMeta(meta);
-        return true;
-    }
 
     @Override
     public void open(Player opener) {

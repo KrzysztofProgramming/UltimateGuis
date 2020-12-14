@@ -1,6 +1,7 @@
 package ad.guis.ultimateguis.engine.interfaces;
 
-import org.bukkit.OfflinePlayer;
 
-public interface PlayersRefreshFunction extends RefreshFunction<OfflinePlayer> {
+import java.util.UUID;
+
+public interface PlayersRefreshFunction extends RefreshFunction<UUID> {
 }

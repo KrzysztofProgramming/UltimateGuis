@@ -151,8 +151,9 @@ public abstract class ListGui<T> extends BasicGui implements ListableGui<T> {
     @Override
     public void open(Player opener) {
         if (refreshFunction != null) {
-            this.list = this.refreshFunction.getList();
-            if (this.list == null) this.list = new ArrayList<>();
+            List<? extends T> copyList = this.refreshFunction.getList();
+            if (copyList == null) this.list = new ArrayList<>();
+            else this.list = new ArrayList<>(copyList);
         }
         calcPageCount();
         init();
@@ -161,7 +162,7 @@ public abstract class ListGui<T> extends BasicGui implements ListableGui<T> {
 
     @Override
     public void onClose() {
-        this.list.clear(); //list will be reload when gui open again
+        this.list.clear();
         super.onClose();
     }
 

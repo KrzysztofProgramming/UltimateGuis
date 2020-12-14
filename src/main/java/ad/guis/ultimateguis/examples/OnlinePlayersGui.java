@@ -21,6 +21,8 @@ public class OnlinePlayersGui extends PlayersGui {
     public OnlinePlayersGui(OfflineAction action, BasicGui previousGui, String title) {
         super(action, null, previousGui, title);
         this.setRefreshFunction(() -> Bukkit.getOnlinePlayers().stream().sorted(Comparator
-                .comparing(OfflinePlayer::getName, String.CASE_INSENSITIVE_ORDER)).collect(Collectors.toList()));
+                .comparing(OfflinePlayer::getName, String.CASE_INSENSITIVE_ORDER))
+                .map(OfflinePlayer::getUniqueId)
+                .collect(Collectors.toList()));
     }
 }
