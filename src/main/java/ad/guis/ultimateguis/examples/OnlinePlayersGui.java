@@ -3,8 +3,10 @@ package ad.guis.ultimateguis.examples;
 import ad.guis.ultimateguis.engine.basics.BasicGui;
 import ad.guis.ultimateguis.engine.interfaces.OfflineAction;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 
-import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.stream.Collectors;
 
 public class OnlinePlayersGui extends PlayersGui {
 
@@ -18,6 +20,7 @@ public class OnlinePlayersGui extends PlayersGui {
 
     public OnlinePlayersGui(OfflineAction action, BasicGui previousGui, String title) {
         super(action, null, previousGui, title);
-        this.setRefreshFunction(() -> new ArrayList<>(Bukkit.getOnlinePlayers()));
+        this.setRefreshFunction(() -> Bukkit.getOnlinePlayers().stream().sorted(Comparator
+                .comparing(OfflinePlayer::getName, String.CASE_INSENSITIVE_ORDER)).collect(Collectors.toList()));
     }
 }

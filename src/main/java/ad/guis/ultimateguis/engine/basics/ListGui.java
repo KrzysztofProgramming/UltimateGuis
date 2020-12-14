@@ -159,6 +159,12 @@ public abstract class ListGui<T> extends BasicGui implements ListableGui<T> {
         super.open(opener);
     }
 
+    @Override
+    public void onClose() {
+        this.list.clear(); //list will be reload when gui open again
+        super.onClose();
+    }
+
     private void calcPageCount() {
         this.pageCount = Math.max((this.list.size() - 1) / CAPACITY + 1, 1);
         if (pageNumber >= pageCount) pageNumber = pageCount - 1;
