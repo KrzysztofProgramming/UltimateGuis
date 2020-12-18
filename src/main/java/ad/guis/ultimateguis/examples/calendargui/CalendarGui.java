@@ -30,7 +30,7 @@ public class CalendarGui extends BasicGui {
 
     @Getter
     @Setter
-    private static final ItemStack nextYear;
+    private static ItemStack nextYear;
     @Getter
     @Setter
     private static ItemStack previousYear;

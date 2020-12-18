@@ -15,7 +15,6 @@ import java.util.*;
 
 public class BasicGui {
     protected Inventory gui;
-    private final Map<Integer, Action> tempMap = new HashMap<>();
     protected Map<Integer, Action> actions = new HashMap<>();
     protected BasicGui previousGui;
     protected Player viewer;
@@ -30,17 +29,12 @@ public class BasicGui {
         this.lastClick = lastClick;
     }
 
-
     /**
      * @return player who last open this Inventory
      */
     public Player getLastViewer() {
         return viewer;
     }
-
-    /**
-     * Pozwala na utworzenie klasy dziedziczącej po Gui, z własnymi konfiguracjami
-     */
 
     /**
      * rejestruje event obsługujący dane gui
@@ -328,6 +322,7 @@ public class BasicGui {
 
     private static List<String> splitLoreBasic(String lore, int characterLimit, char colorChar) {
         if (characterLimit <= 0) characterLimit = 1;
+        if (lore.length() <= characterLimit) return new ArrayList<>(Collections.singleton(lore));
 
         String currentColors = "";
         String currentFormatting = "";

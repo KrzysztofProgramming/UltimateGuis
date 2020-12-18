@@ -1,18 +1,10 @@
 package ad.guis.ultimateguis;
 
 import ad.guis.ultimateguis.engine.basics.GuiListener;
-import ad.guis.ultimateguis.examples.calendargui.CalendarGui;
-import ad.guis.ultimateguis.examples.calendargui.CalendarGuiAction;
-import ad.guis.ultimateguis.examples.calendargui.SpecialDate;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.util.Vector;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -31,25 +23,6 @@ public final class UltimateGuis extends JavaPlugin {
             instance = new UltimateGuis();
         }
         return instance;
-    }
-
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-            if(sender instanceof Player) {
-                Player player = (Player) sender;
-                CalendarGui gui = new CalendarGui();
-                gui.setCalendarGuiAction(new CalendarGuiAction() {
-                    @Override
-                    public void action(LocalDate date, Player player, CalendarGui gui) {
-                        gui.setSecondSpecialDate(new SpecialDate(date));
-                    }
-                });
-            }
-        return true;
-    }
-    Vector setModule(Vector v, double value){
-        double m = value / v.length();
-        return new Vector(v.getX() * m, v.getY() * m, v.getZ() * m);
     }
 
     @Override
