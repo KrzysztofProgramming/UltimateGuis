@@ -158,6 +158,13 @@ public class BasicGui {
         return false;
     }
 
+    public static ItemStack modifyLore(ItemStack item, List<String> newLore) {
+        ItemMeta meta = item.getItemMeta();
+        meta.setLore(newLore);
+        item.setItemMeta(meta);
+        return item;
+    }
+
     /**
      * Zwraca prawdę, jeśli item został dodany
      * UWAGA: może usunąć item jeśli taki istnieje w podanym miejscu
@@ -169,11 +176,18 @@ public class BasicGui {
      */
 
     public boolean setItem(int positionX, int positionY, ItemStack item, Action action) {
-        if (positionX > 8) return false;
-        if (positionY > gui.getSize() / 9 - 1) return false;
-        gui.setItem(positionY * 9 + positionX, item);
-        putToActions(positionY * 9 + positionX, action);
+        return this.setItem(positionY * 9 + positionX, item, action);
+    }
+
+    protected boolean setItem(int position, ItemStack item, Action action) {
+        if (position >= gui.getSize()) return false;
+        gui.setItem(position, item);
+        putToActions(position, action);
         return true;
+    }
+
+    protected void replaceItem(int position, ItemStack newItem) {
+        this.gui.setItem(position, newItem);
     }
 
     /**
@@ -225,12 +239,6 @@ public class BasicGui {
     public void onClose() {
     }
 
-    protected boolean setItem(int position, ItemStack item, Action action) {
-        if (position >= gui.getSize()) return false;
-        gui.setItem(position, item);
-        putToActions(position, action);
-        return true;
-    }
 
     public static List<String> splitLore(String lore, int characterLimit, char colorChar) {
         String[] splitedByLine = lore.split("\n");
@@ -277,6 +285,10 @@ public class BasicGui {
 
     public static ItemStack createBackground(short color) {
         return createItem(Material.STAINED_GLASS_PANE, ChatColor.MAGIC + "", color);
+    }
+
+    public void replaceItem(int positionX, int positionY, ItemStack newItem) {
+        this.replaceItem(positionY * 9 + positionX, newItem);
     }
 
     public static ItemStack createExitItem(String name) {

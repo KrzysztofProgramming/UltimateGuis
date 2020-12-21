@@ -4,16 +4,23 @@ import ad.guis.ultimateguis.engine.basics.BasicGui;
 import ad.guis.ultimateguis.engine.basics.ListGui;
 import ad.guis.ultimateguis.engine.interfaces.OfflineAction;
 import ad.guis.ultimateguis.engine.interfaces.PlayersRefreshFunction;
+import ad.guis.ultimateguis.multithreading.Operation;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.SkullType;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
  * klasa powinna być tworzona tylko dynamicznie, aby uaktualniać gui z graczami online
  */
 public class PlayersGui extends ListGui<UUID> {
+
+    private static final List<UUID> heads = new ArrayList<>();
 
     public PlayersGui() {
         this(null);
@@ -31,8 +38,31 @@ public class PlayersGui extends ListGui<UUID> {
         super(action, refreshFunction, previousGui, title);
     }
 
+    public static ItemStack calcHead(UUID player) {
+        ItemStack head = new ItemStack(Material.SKULL_ITEM, 1, (short) SkullType.PLAYER.ordinal());
+        SkullMeta meta = (SkullMeta) head.getItemMeta();
+        String name = Bukkit.getOfflinePlayer(player).getName();
+        meta.setOwner(name);
+        meta.setDisplayName(name);
+        head.setItemMeta(meta);
+        return head;
+    }
+
+    public static boolean isHeadCalc(UUID player) {
+        return heads.contains(player);
+    }
+
+    public synchronized static void addUUIDtoHeads(UUID player) {
+        heads.add(player);
+    }
+
     @Override
     public ItemStack getDescriptionItem(UUID player) {
+        if (heads.contains(player)) return calcHead(player);
+        new Operation<>(() -> calcHead(player)).asyncSubscribe(item -> {
+            replaceItem(player, item);
+            addUUIDtoHeads(player);
+        }).run();
         return BasicGui.createItem(Material.SKULL_ITEM, Bukkit.getOfflinePlayer(player).getName(), (short) 3);
        /* boolean isInVersion = Arrays.stream(Material.values())
                 .map(Material::name).collect(Collectors.toList()).contains("PLAYER_HEAD");

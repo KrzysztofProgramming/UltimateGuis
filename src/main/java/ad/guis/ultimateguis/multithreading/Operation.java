@@ -23,12 +23,14 @@ public class Operation<T> {
         return async;
     }
 
-    public synchronized void asyncSubscribe(SubscribeFunction<T> function) {
+    public synchronized Operation<T> asyncSubscribe(SubscribeFunction<T> function) {
         asyncSubscribeFunction = function;
+        return this;
     }
 
-    public synchronized void syncSubscribe(SubscribeFunction<T> function) {
+    public synchronized Operation<T> syncSubscribe(SubscribeFunction<T> function) {
         syncSubscribeFunction = function;
+        return this;
     }
 
     public boolean isFinished() {

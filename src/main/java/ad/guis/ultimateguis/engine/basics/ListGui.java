@@ -75,6 +75,12 @@ public abstract class ListGui<T> extends BasicGui implements ListableGui<T> {
         bottomBackground();
     }
 
+    protected void replaceItem(T element, ItemStack item) {
+        int index = this.list.indexOf(element);
+        if (index >= (pageNumber + 1) * CAPACITY || index < pageNumber * CAPACITY) return;
+        this.replaceItem(index % 45, item);
+    }
+
     private void initSwitchItems() {
         if (pageCount > 1) {
             this.setItem(0, 5, previousItem, playerWhoClick -> {
