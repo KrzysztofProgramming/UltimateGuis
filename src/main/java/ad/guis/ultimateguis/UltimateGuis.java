@@ -28,9 +28,7 @@ public final class UltimateGuis extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
-        // Plugin startup logic
         guiListener.init();
-        this.getCommand("test").setExecutor(this);
 
     }
 
@@ -38,7 +36,6 @@ public final class UltimateGuis extends JavaPlugin {
     public void onDisable() {
         this.guiListener.disable();
         instance = null;
-        // Plugin shutdown logic
     }
 
     public static OfflinePlayer getOfflinePlayer(String name) {
