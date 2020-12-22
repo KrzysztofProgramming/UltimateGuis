@@ -46,13 +46,13 @@ public class Operation<T> {
         T value = this.returnFunction.run();
         finished = true;
         if (async) {
-            if (asyncSubscribeFunction != null) asyncSubscribeFunction.subscribe(value);
             if (syncSubscribeFunction != null) Bukkit.getScheduler().runTask(UltimateGuis.getInstance(),
                     () -> syncSubscribeFunction.subscribe(value));
+            if (asyncSubscribeFunction != null) asyncSubscribeFunction.subscribe(value);
         } else {
-            if (syncSubscribeFunction != null) syncSubscribeFunction.subscribe(value);
             if (asyncSubscribeFunction != null) Bukkit.getScheduler().runTaskAsynchronously(UltimateGuis.getInstance(),
                     () -> asyncSubscribeFunction.subscribe(value));
+            if (syncSubscribeFunction != null) syncSubscribeFunction.subscribe(value);
         }
     }
 }
