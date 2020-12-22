@@ -39,9 +39,12 @@ public class PlayersGui extends ListGui<UUID> {
     }
 
     public static ItemStack calcHead(UUID player) {
+        return calcHead(Bukkit.getOfflinePlayer(player).getName());
+    }
+
+    public static ItemStack calcHead(String name) {
         ItemStack head = new ItemStack(Material.SKULL_ITEM, 1, (short) SkullType.PLAYER.ordinal());
         SkullMeta meta = (SkullMeta) head.getItemMeta();
-        String name = Bukkit.getOfflinePlayer(player).getName();
         meta.setOwner(name);
         meta.setDisplayName(name);
         head.setItemMeta(meta);
