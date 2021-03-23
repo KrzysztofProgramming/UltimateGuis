@@ -29,23 +29,21 @@ public class GuiListener implements Listener {
 
     public synchronized void addGui(BasicGui gui) {
         if (locked)
-            Bukkit.getScheduler().scheduleSyncDelayedTask(UltimateGuis.getInstance(), () -> activeGuis.add(gui));
+            Bukkit.getScheduler().scheduleSyncDelayedTask(UltimateGuis.getInstance(), () -> {
+                activeGuis.add(gui);
+            });
         else activeGuis.add(gui);
     }
 
     public void disable() {
-        activeGuis.forEach(gui -> gui.getGui().getViewers().forEach(HumanEntity::closeInventory));
-    }
+        activeGuis.forEach(gui -> {
+            List<HumanEntity> guiViewers = gui.getGui().getViewers();
+            for (int i = 0; i < guiViewers.size(); i++) {
+                guiViewers.get(i).closeInventory();
+            }
 
-    public synchronized void removeGui(BasicGui gui) {
-        if (locked)
-            Bukkit.getScheduler().scheduleSyncDelayedTask(UltimateGuis.getInstance(), () -> activeGuis.remove(gui));
-        else activeGuis.remove(gui);
+        });
     }
-
-//    public synchronized void setClickCooldown(int cooldown){
-//        clickCooldown = cooldown;
-//    }
 
     public static int getClickCooldown() {
         return clickCooldown;
