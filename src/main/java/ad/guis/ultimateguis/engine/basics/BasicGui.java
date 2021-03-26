@@ -219,7 +219,7 @@ public class BasicGui {
         return actions;
     }
 
-    boolean isOpen() {
+    public boolean isOpen() {
         return isOpen;
     }
 
