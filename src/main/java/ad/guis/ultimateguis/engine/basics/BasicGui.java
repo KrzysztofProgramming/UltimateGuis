@@ -25,7 +25,7 @@ public class BasicGui {
         return lastClick;
     }
 
-    private void setLastClick(long lastClick) {
+    void setLastClick(long lastClick) {
         this.lastClick = lastClick;
     }
 
