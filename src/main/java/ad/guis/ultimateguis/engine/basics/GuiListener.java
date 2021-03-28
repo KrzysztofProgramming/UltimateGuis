@@ -27,12 +27,16 @@ public class GuiListener implements Listener {
     }
 
 
-    public synchronized void addGui(BasicGui gui) {
+    public synchronized void addGui(BasicGui gui, Player opener) {
         if (locked)
             Bukkit.getScheduler().scheduleSyncDelayedTask(UltimateGuis.getInstance(), () -> {
+                opener.openInventory(gui.getGui());
                 activeGuis.add(gui);
             });
-        else activeGuis.add(gui);
+        else {
+            opener.openInventory(gui.getGui());
+            activeGuis.add(gui);
+        }
     }
 
     public void disable() {

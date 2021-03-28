@@ -199,8 +199,7 @@ public class BasicGui {
     public void open(Player opener) {
         this.isOpen = true;
         viewer = opener;
-        opener.openInventory(gui);
-        UltimateGuis.getInstance().getGuiListener().addGui(this);
+        UltimateGuis.getInstance().getGuiListener().addGui(this, opener);
     }
 
     /**
