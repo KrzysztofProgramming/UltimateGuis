@@ -55,7 +55,6 @@ public class GuiListener implements Listener {
 
     @EventHandler
     void InventoryClick(InventoryClickEvent e) {
-
         if (!(e.getWhoClicked() instanceof Player) || e.getRawSlot() < 0) return;
         this.lock();
 
@@ -64,10 +63,14 @@ public class GuiListener implements Listener {
                 .collect(Collectors.toList());
         this.unlock();
 
-        if(!filteredGuis.isEmpty()) e.setCancelled(true);
         filteredGuis.stream().filter(gui -> gui.getLastClick() + clickCooldown < System.currentTimeMillis())
                 .forEach(
                         gui -> {
+                            if(gui instanceof ModifiableGui &&
+                                    ((ModifiableGui)gui).getModifiableSlots().contains(e.getRawSlot()))
+                                return;
+
+                            e.setCancelled(true);
                             Action action = gui.getActions().get(e.getRawSlot());
                             if (action == null) return;
                             action.action((Player) e.getWhoClicked());
