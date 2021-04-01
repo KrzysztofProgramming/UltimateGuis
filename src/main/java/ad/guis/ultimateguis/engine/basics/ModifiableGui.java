@@ -1,34 +1,29 @@
 package ad.guis.ultimateguis.engine.basics;
 
+import ad.guis.ultimateguis.engine.interfaces.Action;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.HashSet;
-import java.util.Set;
+import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class ModifiableGui extends BasicGui {
 
     @Setter
     @Getter
-    protected Set<Integer> modifiableSlots = new HashSet<>();
+    protected int firstUnmodifiableSlot = 0;
 
     public ModifiableGui(int rowsAmount, String title, BasicGui previousGui) throws IllegalArgumentException {
         super(rowsAmount, title, previousGui);
     }
 
-    public void addModifiableSlots(int slot){
-        if(slot >= this.gui.getSize() || slot < 0) return;
-    }
+    @Override
+    protected boolean advancedClickHandler(InventoryClickEvent e, Action defaultAction) {
+        if(firstUnmodifiableSlot <= 0) return true;
 
-    public void setModifiableSlots(int start, int end){
-        if(start < 0) start = 0;
-        if(end > this.gui.getSize()) end = this.gui.getSize();
-        for(int i=start; i<end; i++){
-            this.modifiableSlots.add(i);
+        if(e.getRawSlot() < firstUnmodifiableSlot ||
+            e.getRawSlot() >= this.getGui().getSize()){
+            e.setCancelled(false);
+            return false;
         }
-    }
-
-    public void clearModifiableSlots(){
-        this.modifiableSlots.clear();
+        return true;
     }
 }

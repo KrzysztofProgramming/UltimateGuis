@@ -66,12 +66,11 @@ public class GuiListener implements Listener {
         filteredGuis.stream().filter(gui -> gui.getLastClick() + clickCooldown < System.currentTimeMillis())
                 .forEach(
                         gui -> {
-                            if(gui instanceof ModifiableGui &&
-                                    ((ModifiableGui)gui).getModifiableSlots().contains(e.getRawSlot()))
-                                return;
-
                             e.setCancelled(true);
+
                             Action action = gui.getActions().get(e.getRawSlot());
+                            if(!gui.advancedClickHandler(e, action)) return;
+
                             if (action == null) return;
                             action.action((Player) e.getWhoClicked());
                             gui.setLastClick(System.currentTimeMillis());

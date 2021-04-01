@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -47,6 +48,7 @@ public class BasicGui {
         if (rowsAmount > 6) throw new IllegalArgumentException("Wrong rowsAmount!");
         gui = Bukkit.createInventory(null, rowsAmount * 9, title);
     }
+
 
     protected BasicGui() {
     }
@@ -136,6 +138,7 @@ public class BasicGui {
         return true;
     }
 
+
     void setClosed() {
         this.isOpen = false;
     }
@@ -157,6 +160,12 @@ public class BasicGui {
         }
         return false;
     }
+
+
+    protected boolean advancedClickHandler(InventoryClickEvent e, Action defaultAction){
+        return true;
+    }
+
 
     public static ItemStack modifyLore(ItemStack item, List<String> newLore) {
         ItemMeta meta = item.getItemMeta();
