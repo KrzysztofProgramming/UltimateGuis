@@ -62,11 +62,10 @@ public class GuiListener implements Listener {
             e.getInventory().equals(gui.getGui()))
                 .collect(Collectors.toList());
         this.unlock();
-
+        if(!filteredGuis.isEmpty())   e.setCancelled(true);
         filteredGuis.stream().filter(gui -> gui.getLastClick() + clickCooldown < System.currentTimeMillis())
                 .forEach(
                         gui -> {
-                            e.setCancelled(true);
 
                             Action action = gui.getActions().get(e.getRawSlot());
                             if(!gui.advancedClickHandler(e, action)) return;

@@ -5,6 +5,7 @@ import ad.guis.ultimateguis.engine.interfaces.Action;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
@@ -166,6 +167,15 @@ public class BasicGui {
         return true;
     }
 
+    public void closeLater(){
+        Bukkit.getScheduler().scheduleSyncDelayedTask(UltimateGuis.getInstance(), () -> {
+            List<HumanEntity> guiViewers = getGui().getViewers();
+            for (int i = 0; i < guiViewers.size(); i++) {
+                guiViewers.get(i).closeInventory();
+            }
+        });
+
+    }
 
     public static ItemStack modifyLore(ItemStack item, List<String> newLore) {
         ItemMeta meta = item.getItemMeta();
