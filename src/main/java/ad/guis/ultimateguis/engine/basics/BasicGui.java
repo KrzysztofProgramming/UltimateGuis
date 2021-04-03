@@ -67,6 +67,18 @@ public class BasicGui {
     }
 
 
+    public void returnItemToPlayer(ItemStack item){
+        if(this.getLastViewer() == null || !this.getLastViewer().isOnline())
+            return;
+        BasicGui.returnItemToPlayer(item, this.getLastViewer());
+    }
+
+    public static void returnItemToPlayer(ItemStack item, Player player){
+        Map<Integer, ItemStack> itemsToDrop = player.getInventory().addItem(item);
+           itemsToDrop.values().forEach(itemToDrop ->
+            player.getWorld().dropItem(player.getLocation(), itemToDrop));
+    }
+
     /**
      * zwraca previous gui, należy sprawdzić czy to nie null
      */
