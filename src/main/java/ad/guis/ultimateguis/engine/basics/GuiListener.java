@@ -7,6 +7,7 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 
@@ -66,8 +67,15 @@ public class GuiListener implements Listener {
         filteredGuis.stream().filter(gui -> gui.getLastClick() + clickCooldown < System.currentTimeMillis())
                 .forEach(
                         gui -> {
+                            Action action;
+                            if(e.getClick() == ClickType.SHIFT_RIGHT
+                                    || e.getClick() == ClickType.RIGHT){
+                                action = gui.getRightClickActions().get(e.getRawSlot());
+                            }
+                            else {
+                                action = gui.getActions().get(e.getRawSlot());
+                            }
 
-                            Action action = gui.getActions().get(e.getRawSlot());
                             if(!gui.advancedClickHandler(e, action)) return;
 
                             if (action == null) return;

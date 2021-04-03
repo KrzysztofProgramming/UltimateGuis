@@ -2,6 +2,7 @@ package ad.guis.ultimateguis.engine.basics;
 
 import ad.guis.ultimateguis.UltimateGuis;
 import ad.guis.ultimateguis.engine.interfaces.Action;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -18,6 +19,8 @@ import java.util.*;
 public class BasicGui {
     protected Inventory gui;
     protected Map<Integer, Action> actions = new HashMap<>();
+    @Getter
+    protected Map<Integer, Action> rightClickActions = new HashMap<>();
     protected BasicGui previousGui;
     protected Player viewer;
     private boolean isOpen = false;
@@ -165,10 +168,15 @@ public class BasicGui {
      * @return prawda jeśli item został dodany
      */
     public boolean addItem(ItemStack item, Action action) {
+        return this.addItem(item, action, null);
+    }
+
+    public boolean addItem(ItemStack item, Action action, Action rightAction) {
         int firstEmptySlot = gui.firstEmpty();
         if (firstEmptySlot != -1) {
             gui.addItem(item);
             putToActions(firstEmptySlot, action);
+            putToRightActions(firstEmptySlot, rightAction);
             return true;
         }
         return false;
@@ -210,10 +218,19 @@ public class BasicGui {
         return this.setItem(positionY * 9 + positionX, item, action);
     }
 
+    public boolean setItem(int positionX, int positionY, ItemStack item, Action action, Action rightAction) {
+        return this.setItem(positionY * 9 + positionX, item, action, rightAction);
+    }
+
     protected boolean setItem(int position, ItemStack item, Action action) {
+        return this.setItem(position, item, action, null);
+    }
+
+    protected boolean setItem(int position, ItemStack item, Action action, Action rightAction){
         if (position >= gui.getSize()) return false;
         gui.setItem(position, item);
         putToActions(position, action);
+        putToRightActions(position, rightAction);
         return true;
     }
 
@@ -270,6 +287,23 @@ public class BasicGui {
     }
 
 
+
+    public void replaceItem(int positionX, int positionY, ItemStack newItem) {
+        this.replaceItem(positionY * 9 + positionX, newItem);
+    }
+
+
+    protected void backOrClose(Player p) {
+        if (previousGui != null) previousGui.open(p);
+        else p.closeInventory();
+    }
+
+    //***************************************************************************************
+    //******************************STATIC***************************************************
+    //***************************************************************************************
+
+
+
     public static List<String> splitLore(String lore, int characterLimit, char colorChar) {
         String[] splitedByLine = lore.split("\n");
         List<String> newLore = new ArrayList<>();
@@ -317,10 +351,6 @@ public class BasicGui {
         return createItem(Material.STAINED_GLASS_PANE, ChatColor.MAGIC + "", color);
     }
 
-    public void replaceItem(int positionX, int positionY, ItemStack newItem) {
-        this.replaceItem(positionY * 9 + positionX, newItem);
-    }
-
     public static ItemStack createExitItem(String name) {
         return BasicGui.createItem(Material.BARRIER, name);
     }
@@ -343,11 +373,6 @@ public class BasicGui {
             builder.append(phrase.charAt(i));
         }
         return builder.toString();
-    }
-
-    protected void backOrClose(Player p) {
-        if (previousGui != null) previousGui.open(p);
-        else p.closeInventory();
     }
 
     public static List<String> simpleSplitLore(String... lore) {
@@ -419,6 +444,11 @@ public class BasicGui {
 
     private void putToActions(int position, Action action) {
         if (action == null) return;
+        this.actions.put(position, action);
+    }
+
+    private void putToRightActions(int position, Action action){
+        if(action == null) return;
         this.actions.put(position, action);
     }
 
