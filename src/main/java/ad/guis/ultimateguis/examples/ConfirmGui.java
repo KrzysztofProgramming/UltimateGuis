@@ -3,6 +3,7 @@ package ad.guis.ultimateguis.examples;
 import ad.guis.ultimateguis.Colors;
 import ad.guis.ultimateguis.engine.basics.BasicGui;
 import ad.guis.ultimateguis.engine.interfaces.Action;
+import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -24,6 +25,9 @@ public class ConfirmGui extends BasicGui {
 
     private final Action accepted;
     private final Action denied;
+    @Getter
+    private final boolean unCloseable;
+    private boolean actionSelected = false;
 
     /**
      * @param message  tytuł gui będący równocześnie pytaniem/zdaniem do potwierdzenia
@@ -31,16 +35,27 @@ public class ConfirmGui extends BasicGui {
      * @param denied   akcja wykonywana po odrzuceniu
      */
     public ConfirmGui(String message, Action accepted, Action denied) {
+        this(message, accepted, denied, false);
+    }
+
+    public ConfirmGui(String message, Action accepted, Action denied, boolean unCloseable) {
         super(3, message, null);
         this.accepted = accepted;
         this.denied = denied;
+        this.unCloseable = unCloseable;
         init();
     }
 
     private void init() {
 
-        this.setItem(2, 1, accept, accepted);
-        this.setItem(6, 1, deny, denied);
+        this.setItem(2, 1, accept, element -> {
+            actionSelected = true;
+            accepted.action(element);
+        });
+        this.setItem(6, 1, deny,  element -> {
+            actionSelected = true;
+            denied.action(element);
+        });
 
         this.setItem(4, 0, backgroundBlack, null);
         this.setItem(4, 1, backgroundBlack, null);
@@ -60,5 +75,13 @@ public class ConfirmGui extends BasicGui {
         this.setItem(8,2,backgroundRed,null);
 
         this.autoFill(backgroundGreen);
+    }
+
+    @Override
+    public void onClose() {
+        if(isUnCloseable() && !actionSelected){
+            this.open(this.getLastViewer());
+        }
+        super.onClose();
     }
 }

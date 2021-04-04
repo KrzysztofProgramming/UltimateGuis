@@ -36,6 +36,7 @@ public abstract class ListGui<T> extends BasicGui implements ListableGui<T> {
     protected List<? extends T> list = new ArrayList<>();
     protected RefreshFunction<T> refreshFunction;
     protected BasicAction<T> action;
+    protected BasicAction<T> rightAction;
     protected Player lastClicker;
     private int pageNumber = 0;
     private int pageCount = 1;
@@ -65,7 +66,10 @@ public abstract class ListGui<T> extends BasicGui implements ListableGui<T> {
             ItemStack descriptionItem = getDescriptionItem(element);
             this.setItem(counter, descriptionItem, playerWhoClick -> {
                 lastClicker = playerWhoClick;
-                ListGui.this.action.action(element);
+                if(ListGui.this.action != null) ListGui.this.action.action(element);
+            }, playerWhoClick ->{
+                lastClicker = playerWhoClick;
+                if(ListGui.this.rightAction != null) ListGui.this.rightAction.action(element);
             });
             counter++;
         }
@@ -152,6 +156,10 @@ public abstract class ListGui<T> extends BasicGui implements ListableGui<T> {
     @Override
     public void setAction(BasicAction<T> action) {
         this.action = action;
+    }
+
+    public void setRightAction(BasicAction<T> rightAction){
+        this.rightAction = rightAction;
     }
 
     @Override

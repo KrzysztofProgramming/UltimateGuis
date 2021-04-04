@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
@@ -70,16 +71,18 @@ public class BasicGui {
     }
 
 
-    public void returnItemToPlayer(ItemStack item){
+    public void returnItemToPlayer(ItemStack ...item){
         if(this.getLastViewer() == null || !this.getLastViewer().isOnline())
             return;
-        BasicGui.returnItemToPlayer(item, this.getLastViewer());
+        BasicGui.returnItemToPlayer(this.getLastViewer(), item);
     }
 
-    public static void returnItemToPlayer(ItemStack item, Player player){
+    public static void returnItemToPlayer(Player player, ItemStack ...item){
         Map<Integer, ItemStack> itemsToDrop = player.getInventory().addItem(item);
-           itemsToDrop.values().forEach(itemToDrop ->
-            player.getWorld().dropItem(player.getLocation(), itemToDrop));
+        itemsToDrop.values().forEach(itemToDrop ->{
+            Item droppedItem = player.getWorld().dropItem(player.getLocation(), itemToDrop);
+            droppedItem.setPickupDelay(100);
+        });
     }
 
     /**
@@ -449,7 +452,7 @@ public class BasicGui {
 
     private void putToRightActions(int position, Action action){
         if(action == null) return;
-        this.actions.put(position, action);
+        this.rightClickActions.put(position, action);
     }
 
     private static String shortColors(String phrase, char colorChar) {
