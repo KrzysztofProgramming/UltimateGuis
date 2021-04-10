@@ -367,15 +367,7 @@ public class BasicGui {
     private static final String resetChars = "rR";
 
     public static String clearColors(String phrase, char colorChar) {
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < phrase.length(); i++) {
-            if (phrase.charAt(i) == colorChar) {
-                i++;
-                continue;
-            }
-            builder.append(phrase.charAt(i));
-        }
-        return builder.toString();
+        return phrase.replaceAll(String.valueOf(colorChar), "");
     }
 
     public static List<String> simpleSplitLore(String... lore) {
